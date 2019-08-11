@@ -4,11 +4,11 @@
   IDE.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    16 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.AboutBox;
+Unit DebuggingTools.AboutBox;
 
 Interface
 
@@ -23,7 +23,7 @@ Uses
   ToolsAPI,
   SysUtils,
   Windows,
-  DebugWithCodeSite.Common,
+  DebuggingTools.Common,
   Forms;
 
 {$IFDEF D2005}
@@ -43,6 +43,13 @@ Var
 **)
 Procedure AddAboutBoxEntry;
 
+ResourceString
+  strIDEPlugInDescription = 'An IDE plug-in to added CodeSite debugging via Breakpoints.';
+  strSKUBuild = 'SKU Build %d.%d.%d.%d';
+
+Const
+  strDDTSplashScreenBitMap = 'DDTSplashScreenBitMap48x48';
+
 Var
   iMajor : Integer;
   iMinor : Integer;
@@ -53,15 +60,15 @@ Var
 Begin //FI:W519
   {$IFDEF D2005}
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
-  bmSplashScreen := LoadBitmap(hInstance, 'DWCSSplashScreenBitMap48x48');
+  bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
     Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
       Application.Title]),
-    'An IDE plug-in to added CodeSite debugging via Breakpoints.',
+    strIDEPlugInDescription,
     bmSplashScreen,
     False,
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
-    Format('SKU Build %d.%d.%d.%d', [iMajor, iMinor, iBugfix, iBuild]));
+    Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild]));
   {$ENDIF}
 End;
 

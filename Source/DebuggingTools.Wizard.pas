@@ -3,11 +3,11 @@
   This module contains the main IDE wizard which manages the life time of all objects.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    17 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.Wizard;
+Unit DebuggingTools.Wizard;
 
 Interface
 
@@ -20,16 +20,16 @@ Uses
   ActnList,
   ExtCtrls,
   ImgList,
-  DebugWithCodeSite.Types,
-  DebugWithCodeSite.Interfaces;
+  DebuggingTools.Types,
+  DebuggingTools.Interfaces;
 
 Type
   (** A class which implements the OIOTAWizard interface to provide the plug-ins main IDE wizard. **)
-  TDWCSWizard = Class(TInterfacedObject, IOTANotifier, IOTAWizard)
+  TDDTWizard = Class(TInterfacedObject, IOTANotifier, IOTAWizard)
   Strict Private
     FMenuTimer     : TTimer;
     FMenuInstalled : Boolean;
-    FPluginOptions : IDWCSPluginOptions;
+    FPluginOptions : IDDTPluginOptions;
   Strict Protected
     // IOTAWizard
     Procedure Execute;
@@ -63,15 +63,15 @@ Uses
   Graphics,
   Forms,
   ActnPopup,
-  DebugWithCodeSite.Functions,
+  DebuggingTools.Functions,
   Dialogs,
   Registry,
-  DebugWithCodeSite.AboutBox,
-  DebugWithCodeSite.SplashScreen,
-  DebugWithCodeSite.OptionsIDEInterface,
-  DebugWithCodeSite.PluginOptions;
+  DebuggingTools.AboutBox,
+  DebuggingTools.SplashScreen,
+  DebuggingTools.OptionsIDEInterface,
+  DebuggingTools.PluginOptions;
 
-{ TDWCSWizard }
+{ TDDTWizard }
 
 (**
 
@@ -85,10 +85,10 @@ Uses
   @return  an Integer
 
 **)
-Function TDWCSWizard.AddImageToList(Const ImageList : TCustomImageList): Integer;
+Function TDDTWizard.AddImageToList(Const ImageList : TCustomImageList): Integer;
 
 Const
-  strImageName = 'DWCSMenuBitMap16x16';
+  strImageName = 'DDTMenuBitMap16x16';
 
 Var
   BM       : TBitMap;
@@ -115,7 +115,7 @@ End;
   @postcon The contect menu is added and disables the timer if the editor context menu it found.
 
 **)
-Procedure TDWCSWizard.AddMenuToEditorContextMenu;
+Procedure TDDTWizard.AddMenuToEditorContextMenu;
 
   (**
 
@@ -129,13 +129,16 @@ Procedure TDWCSWizard.AddMenuToEditorContextMenu;
   **)
   Function FindEditWindow : TForm;
 
+  Const
+    strTEditWindowClassName = 'TEditWindow';
+
   Var
     iForm: Integer;
 
   Begin
     Result := Nil;
     For iForm := 0 To Screen.FormCount - 1 Do
-      If CompareText(Screen.Forms[iForm].ClassName, 'TEditWindow') = 0 Then
+      If CompareText(Screen.Forms[iForm].ClassName, strTEditWindowClassName) = 0 Then
         Begin
           Result := Screen.Forms[iForm];
           Break;
@@ -173,6 +176,13 @@ Procedure TDWCSWizard.AddMenuToEditorContextMenu;
           End;
   End;
 
+ResourceString
+  strDebugWithCodeSiteCaption = 'Debug &with CodeSite';
+
+Const
+  strEditorLocalMenuComponentName = 'EditorLocalMenu';
+  strMenuName = 'miDDTDebugWithCodeSite';
+
 Var
   F: TForm;
   CM: TPopupActionBar;
@@ -183,13 +193,13 @@ Begin
   F := FindEditWindow;
   If Assigned(F) Then
     Begin
-      CM := FindComponent(F, 'EditorLocalMenu', TPopupActionBar) As TPopupActionBar;
+      CM := FindComponent(F, strEditorLocalMenuComponentName, TPopupActionBar) As TPopupActionBar;
       If Assigned(CM) Then
         Begin
           iImageIndex := AddImageToList(CM.Images);
           MenuItem := TMenuItem.Create(CM);
-          MenuItem.Name := 'miDWCSDebugWithCodeSite';
-          MenuItem.Caption := 'Debug &with CodeSite';
+          MenuItem.Name := strMenuName;
+          MenuItem.Caption := strDebugWithCodeSiteCaption;
           MenuItem.OnClick := DebugWithCodeSiteClick;
           MenuItem.ImageIndex := iImageIndex;
           CM.Items.Add(MenuItem);
@@ -205,8 +215,10 @@ End;
   @precon  None.
   @postcon None.
 
+  @nocheck EmptyMethod
+  
 **)
-Procedure TDWCSWizard.AfterSave;
+Procedure TDDTWizard.AfterSave;
 
 Begin
   // Do nothing in the context of an IOTAWizard
@@ -219,8 +231,10 @@ End;
   @precon  None.
   @postcon None.
 
+  @nocheck EmptyMethod
+  
 **)
-Procedure TDWCSWizard.BeforeSave;
+Procedure TDDTWizard.BeforeSave;
 
 Begin
   // Do nothing
@@ -234,17 +248,20 @@ End;
   @postcon Adds a splash screena dn about box and start the timer for installing the context menu.
 
 **)
-Constructor TDWCSWizard.Create;
+Constructor TDDTWizard.Create;
+
+Const
+  iTimerInterval = 1000;
 
 Begin
   Inherited Create;
   AddSplashScreen;
   AddAboutBoxEntry;
-  FPluginOptions := TDWCSPluginOptions.Create;
-  TDWCSIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
+  FPluginOptions := TDDTPluginOptions.Create;
+  TDDTIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
   FMenuInstalled := False;
   FMenuTimer := TTimer.Create(Nil);
-  FMenuTimer.Interval := 1000;
+  FMenuTimer.Interval := iTimerInterval;
   FMenuTimer.OnTimer := MenuInstallerTimer;
   FMenuTimer.Enabled := True;
 End;
@@ -260,7 +277,10 @@ End;
   @param   Sender as a TObject
 
 **)
-Procedure TDWCSWizard.DebugWithCodeSiteClick(Sender: TObject);
+Procedure TDDTWizard.DebugWithCodeSiteClick(Sender: TObject);
+
+ResourceString
+  strThereNoIdentifierAtCursorPosition = 'There is no identifier at the cursor position!';
 
 Var
   ES : IOTAEditorServices;
@@ -289,34 +309,34 @@ Begin
                 iPos := Pos('%s', strMsg);
               End;
             BP.EvalExpression := strMsg;
-            BP.LogResult := dwcscLogResult In FPluginOptions.CheckOptions;
-            BP.DoBreak := dwcscBreak In FPluginOptions.CheckOptions;
-            If dwcscCodeSiteLogging In FPluginOptions.CheckOptions Then
+            BP.LogResult := DDTcLogResult In FPluginOptions.CheckOptions;
+            BP.DoBreak := DDTcBreak In FPluginOptions.CheckOptions;
+            If DDTcCodeSiteLogging In FPluginOptions.CheckOptions Then
               CheckCodeSiteLogging;
-            If dwcscDebuggingDCUs In FPluginOptions.CheckOptions Then
+            If DDTcDebuggingDCUs In FPluginOptions.CheckOptions Then
               CheckDebuggingDCUs;
-            If dwcscLibraryPath In FPluginOptions.CheckOptions Then
+            If DDTcLibraryPath In FPluginOptions.CheckOptions Then
               CheckLibraryPath;
-            If dwcscEditBreakpoint In FPluginOptions.CheckOptions Then
+            If DDTcEditBreakpoint In FPluginOptions.CheckOptions Then
               BP.Edit(True);
           End Else
-            MessageDlg('There is no identifier at the cursor position!', mtWarning, [mbOK], 0);
+            MessageDlg(strThereNoIdentifierAtCursorPosition, mtWarning, [mbOK], 0);
       End;
 End;
 
 (**
 
-  A destructor for the TDWCSWizard class.
+  A destructor for the TDDTWizard class.
 
   @precon  None.
   @postcon Removes the about box and frees the contet menu timer.
 
 **)
-Destructor TDWCSWizard.Destroy;
+Destructor TDDTWizard.Destroy;
 
 Begin
   FPluginOptions.SaveSettings;
-  TDWCSIDEOptionsHandler.RemoveOptionsFrameHandler;
+  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
   RemoveAboutBoxEntry;
   FMenuTimer.Free;
   Inherited Destroy;
@@ -329,8 +349,10 @@ End;
   @precon  None.
   @postcon None.
 
+  @nocheck EmptyMethod
+  
 **)
-Procedure TDWCSWizard.Destroyed;
+Procedure TDDTWizard.Destroyed;
 
 Begin
   // Do nothing
@@ -343,8 +365,10 @@ End;
   @precon  None.
   @postcon None.
 
+  @nocheck EmptyMethod
+  
 **)
-Procedure TDWCSWizard.Execute;
+Procedure TDDTWizard.Execute;
 
 Begin
   // Do nothing
@@ -360,10 +384,14 @@ End;
   @return  a String
 
 **)
-Function TDWCSWizard.GetIDString: String;
+Function TDDTWizard.GetIDString: String;
+
+Const
+  strSeasonFallMusicDavidHoyleDebugWithCodeSite = 'Season''s Fall Music.David Hoyle.Debug with ' + 
+    'CodeSite';
 
 Begin
-  Result := 'Season''s Fall Music.David Hoyle.Debug with CodeSite';
+  Result := strSeasonFallMusicDavidHoyleDebugWithCodeSite;
 End;
 
 (**
@@ -376,10 +404,13 @@ End;
   @return  a String
 
 **)
-Function TDWCSWizard.GetName: String;
+Function TDDTWizard.GetName: String;
+
+ResourceString
+  strDebugWithCodeSite = 'Debug with CodeSite';
 
 Begin
-  Result := 'Debug with CodeSite';
+  Result := strDebugWithCodeSite;
 End;
 
 (**
@@ -392,7 +423,7 @@ End;
   @return  a TWizardState
 
 **)
-Function TDWCSWizard.GetState: TWizardState;
+Function TDDTWizard.GetState: TWizardState;
 
 Begin
   Result := [wsEnabled];
@@ -408,7 +439,7 @@ End;
   @param   Sender as a TObject
 
 **)
-Procedure TDWCSWizard.MenuInstallerTimer(Sender: TObject);
+Procedure TDDTWizard.MenuInstallerTimer(Sender: TObject);
 
 Begin
   AddMenuToEditorContextMenu;
@@ -421,8 +452,10 @@ End;
   @precon  None.
   @postcon None.
 
+  @nocheck EmptyMethod
+  
 **)
-Procedure TDWCSWizard.Modified;
+Procedure TDDTWizard.Modified;
 
 Begin
   // Do nothing

@@ -4,11 +4,11 @@
   startup.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    16 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.SplashScreen;
+Unit DebuggingTools.SplashScreen;
 
 Interface
 
@@ -23,7 +23,7 @@ Uses
   SysUtils,
   Windows,
   Forms,
-  DebugWithCodeSite.Common;
+  DebuggingTools.Common;
 
 (**
 
@@ -35,6 +35,13 @@ Uses
 **)
 Procedure AddSplashScreen;
 
+Const
+  {$IFDEF D2007}
+  strDDTSplashScreenBitMap = 'DDTSplashScreenBitMap24x24';
+  {$ELSE}
+  strDDTSplashScreenBitMap = 'DDTSplashScreenBitMap48x48';
+  {$ENDIF}
+
 Var
   iMajor : Integer;
   iMinor : Integer;
@@ -45,11 +52,7 @@ Var
 Begin //FI:W519
   {$IFDEF D2005}
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
-  {$IFDEF D2007}
-  bmSplashScreen := LoadBitmap(hInstance, 'DWCSSplashScreenBitMap24x24');
-  {$ELSE}
-  bmSplashScreen := LoadBitmap(hInstance, 'DWCSSplashScreenBitMap48x48');
-  {$ENDIF}
+  bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   (SplashScreenServices As IOTASplashScreenServices).AddPluginBitmap(
     Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
       Application.Title]),

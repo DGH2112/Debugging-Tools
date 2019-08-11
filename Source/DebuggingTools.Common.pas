@@ -4,11 +4,11 @@
   plug-ins build information for the splash screen and about box.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    16 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.Common;
+Unit DebuggingTools.Common;
 
 Interface
 
@@ -53,6 +53,10 @@ Uses
 **)
 Procedure BuildNumber(var iMajor, iMinor, iBugFix, iBuild : Integer);
 
+Const
+  iRightShift = 16;
+  iWordMask = $FFFF;
+
 Var
   VerInfoSize: DWORD;
   VerInfo: Pointer;
@@ -71,13 +75,10 @@ Begin
       Try
         GetFileVersionInfo(strBuffer, 0, VerInfoSize, VerInfo);
         VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
-        With VerValue^ Do
-          Begin
-            iMajor := dwFileVersionMS shr 16;
-            iMinor := dwFileVersionMS and $FFFF;
-            iBugFix := dwFileVersionLS shr 16;
-            iBuild := dwFileVersionLS and $FFFF;
-          End;
+        iMajor := VerValue^.dwFileVersionMS shr iRightShift;
+        iMinor := VerValue^.dwFileVersionMS and iWordMask;
+        iBugFix := VerValue^.dwFileVersionLS shr iRightShift;
+        iBuild := VerValue^.dwFileVersionLS and iWordMask;
       Finally
         FreeMem(VerInfo, VerInfoSize);
       End;

@@ -4,15 +4,12 @@
 
   @Author  David Hoyle
   @Version 1.0
-  @Date    17 Sep 2017
+  @Date    18 Sep 2017
 
 **)
-Unit DebugWithCodeSite.Functions;
+Unit DebuggingTools.Functions;
 
 Interface
-
-Uses
-  ToolsAPI;
 
 {$INCLUDE CompilerDefinitions.Inc}
 
@@ -27,10 +24,13 @@ Uses
   {$IFDEF DEBUG}
   CodeSiteLogging,
   {$ENDIF}
+  ToolsAPI,
+  PlatformAPI,
   Classes,
   SysUtils,
   RegularExpressions,
-  Variants;
+  Variants,
+  CommonOptionStrs;
 
 (**
 
@@ -438,18 +438,15 @@ End;
 
 Procedure CheckLibraryPath;
 
-//Var
-//  i : Integer;
-//  P : IOTAProjectOptionsConfigurations;
-//  B : IOTABuildConfiguration;
-
+//var
+//  POC: IOTAProjectOptionsConfigurations;
+//
 Begin
-  OutputMsg('Checking of LibrayrPath not currently implemented');
-//  If Supports(ActiveProject.ProjectOptions, IOTAProjectOptionsConfigurations, P) Then
+  OutputMsg('Checking of LibraryPath not currently implemented');
+//  If Supports(ActiveProject.ProjectOptions, IOTAProjectOptionsConfigurations, POC) Then
 //    Begin
-//      CodeSite.Send(P.ActiveConfigurationName);
-//      CodeSite.Send(P.ActivePlatformName);
-//      CodeSite.Send('LibraryPath', P.ActiveConfiguration.InheritedValue('LibraryPath'));
+//      CodeSite.Send(sAllPackageLibs, POC.ActiveConfiguration.GetValue(sAllPackageLibs, False));
+//      CodeSite.Send(sAllPackageLibs, POC.ActiveConfiguration.GetValue(sAllPackageLibs, True));
 //    End;
 End;
 

@@ -3,11 +3,11 @@
   This module contains a frame for editing the plug-ins options in the IDE options dialogue.
 
   @Author  David Hoyle
-  @Version 1.0
-  @date    16 Sep 2017
+  @Version 1.3
+  @date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.OptionsFrame;
+Unit DebuggingTools.OptionsFrame;
 
 Interface
 
@@ -22,23 +22,23 @@ Uses
   Forms,
   Dialogs,
   ComCtrls,
-  DebugWithCodeSite.Types,
-  DebugWithCodeSite.Interfaces,
+  DebuggingTools.Types,
+  DebuggingTools.Interfaces,
   StdCtrls;
 
 Type
   (** A frame to decsribe tand edit the plug-ins optins in the IDE. **)
-  TframeDWCSOptions = Class(TFrame, IDWCSOptions)
+  TframeDDTOptions = Class(TFrame, IDDTOptions)
     lvOptions: TListView;
     lblCodeSiteMsg: TLabel;
     edtCodeSiteMsg: TEdit;
     lblCodeSiteOptions: TLabel;
     procedure lvOptionsChange(Sender: TObject; Item: TListItem; Change: TItemChange);
   Strict Private
-    FChecks : TDWCSChecks;
+    FChecks : TDDTChecks;
   Strict Protected
-    Procedure LoadOptions(Const CheckOptions : TDWCSChecks; Const strCodeSiteMsg : String);
-    Procedure SaveOptions(Var CheckOptions : TDWCSChecks; Var strCodeSiteMsg : String);
+    Procedure LoadOptions(Const CheckOptions : TDDTChecks; Const strCodeSiteMsg : String);
+    Procedure SaveOptions(Var CheckOptions : TDDTChecks; Var strCodeSiteMsg : String);
   Public
     Constructor Create(AOwner: TComponent); Override;
   End;
@@ -50,7 +50,7 @@ Implementation
 
 Const
   (** A constant array of strings to provide text for each check option. **)
-  strDWCSCheck: Array [Low(TDWCSCheck) .. High(TDWCSCheck)] Of String = (
+  strDDTCheck: Array [Low(TDDTCheck) .. High(TDDTCheck)] Of String = (
     'Check that CodeSiteLogging is in the DPR/DPK unit list',
     'Check that the project has Debugging DCUs checked',
     'Check that CodeSite path is in the library',
@@ -59,30 +59,32 @@ Const
     'Edit the breakpoint after its added'
     );
 
-{ TframeDWCSOptions }
+{ TframeDDTOptions }
 
 (**
 
-  A constructor for the frameDWCSOptions class.
+  A constructor for the frameDDTOptions class.
 
   @precon  None.
   @postcon Populates the list view with options.
 
+  @nocheck MissingCONSTInParam
+
   @param   AOwner as a TComponent
 
 **)
-Constructor TframeDWCSOptions.Create(AOwner: TComponent);
+Constructor TframeDDTOptions.Create(AOwner: TComponent);
 
 Var
-  iOp: TDWCSCheck;
+  iOp: TDDTCheck;
   Item: TListItem;
 
 Begin
   Inherited Create(AOwner);
-  For iOp := Low(TDWCSCheck) To High(TDWCSCheck) Do
+  For iOp := Low(TDDTCheck) To High(TDDTCheck) Do
     Begin
       Item := lvOptions.Items.Add;
-      Item.Caption := strDWCSCheck[iOp];
+      Item.Caption := strDDTCheck[iOp];
     End;
 End;
 
@@ -93,18 +95,18 @@ End;
   @precon  None.
   @postcon The checked status of the list view items is updated based on the given check set.
 
-  @param   CheckOptions   as a TDWCSChecks as a constant
+  @param   CheckOptions   as a TDDTChecks as a constant
   @param   strCodeSiteMsg as a String as a constant
 
 **)
-Procedure TframeDWCSOptions.LoadOptions(Const CheckOptions : TDWCSChecks; Const strCodeSiteMsg : String);
+Procedure TframeDDTOptions.LoadOptions(Const CheckOptions : TDDTChecks; Const strCodeSiteMsg : String);
 
 Var
-  iOp: TDWCSCheck;
+  iOp: TDDTCheck;
 
 Begin
   FChecks := CheckOptions;
-  For iOp := Low(TDWCSCheck) To High(TDWCSCheck) Do
+  For iOp := Low(TDDTCheck) To High(TDDTCheck) Do
     lvOptions.Items[Ord(iOp)].Checked := iOp In CheckOptions;
   edtCodeSiteMsg.Text := strCodeSiteMsg;
 End;
@@ -121,14 +123,14 @@ End;
   @param   Change as a TItemChange
 
 **)
-Procedure TframeDWCSOptions.lvOptionsChange(Sender: TObject; Item: TListItem; Change: TItemChange);
+Procedure TframeDDTOptions.lvOptionsChange(Sender: TObject; Item: TListItem; Change: TItemChange);
 
 Begin
   If Change = ctState Then
     If Item.Checked Then
-      Include(FChecks, TDWCSCheck(Item.Index))
+      Include(FChecks, TDDTCheck(Item.Index))
     Else
-      Exclude(FChecks, TDWCSCheck(Item.Index));
+      Exclude(FChecks, TDDTCheck(Item.Index));
 End;
 
 (**
@@ -138,11 +140,11 @@ End;
   @precon  None.
   @postcon The given options set is updated with the selected options.
 
-  @param   CheckOptions   as a TDWCSChecks as a reference
+  @param   CheckOptions   as a TDDTChecks as a reference
   @param   strCodeSiteMsg as a String as a reference
 
 **)
-Procedure TframeDWCSOptions.SaveOptions(Var CheckOptions : TDWCSChecks; Var strCodeSiteMsg : String);
+Procedure TframeDDTOptions.SaveOptions(Var CheckOptions : TDDTChecks; Var strCodeSiteMsg : String);
 
 Begin
   CheckOptions := FChecks;

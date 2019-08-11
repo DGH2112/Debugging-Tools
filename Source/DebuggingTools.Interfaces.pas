@@ -3,32 +3,32 @@
   This module contains interfaces for use within the application.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    17 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.Interfaces;
+Unit DebuggingTools.Interfaces;
 
 Interface
 
 Uses
-  DebugWithCodeSite.Types;
+  DebuggingTools.Types;
 
 Type
   (** An interface for loading and save options from the Options frame. **)
-  IDWCSOptions = Interface
+  IDDTOptions = Interface
   ['{2C30AC8E-9C54-4544-A6AD-394DA361341F}']
-    Procedure LoadOptions(Const CheckOptions : TDWCSChecks; Const strCodeSiteMsg : String);
-    Procedure SaveOptions(Var CheckOptions : TDWCSChecks; Var strCodeSiteMsg : String);
+    Procedure LoadOptions(Const CheckOptions : TDDTChecks; Const strCodeSiteMsg : String);
+    Procedure SaveOptions(Var CheckOptions : TDDTChecks; Var strCodeSiteMsg : String);
   End;
 
   (** An interface for the Plugin Options **)
-  IDWCSPluginOptions = Interface
+  IDDTPluginOptions = Interface
   ['{C0C072B8-4F4C-4EE1-938A-333FF7BCE881}']
     Function  GetCodeSiteTemplate : String;
     Procedure SetCodeSiteTemplate(Const strCodeSiteTemplate : String);
-    Function  GetCheckOptions : TDWCSChecks;
-    Procedure SetCheckOptions(Const setCheckOptions : TDWCSChecks);
+    Function  GetCheckOptions : TDDTChecks;
+    Procedure SetCheckOptions(Const setCheckOptions : TDDTChecks);
     Procedure LoadSettings;
     Procedure SaveSettings;
     (**
@@ -44,9 +44,9 @@ Type
       This property gets and sets the check options that is used to fill the breakpoint.
       @precon  None.
       @postcon Gets and sets the check options that is used to fill the breakpoint.
-      @return  a TDWCSChecks
+      @return  a TDDTChecks
     **)
-    Property CheckOptions : TDWCSChecks Read GetCheckOptions Write SetCheckOptions;
+    Property CheckOptions : TDDTChecks Read GetCheckOptions Write SetCheckOptions;
   End;
 
 Implementation

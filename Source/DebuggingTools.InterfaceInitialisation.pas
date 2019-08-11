@@ -3,11 +3,11 @@
   This module contaisn the code to load the wizard in to the RAD Studio IDE.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    16 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.InterfaceInitialisation;
+Unit DebuggingTools.InterfaceInitialisation;
 
 Interface
 
@@ -25,21 +25,7 @@ Exports
 Implementation
 
 Uses
-  DebugWithCodeSite.Wizard;
-
-(**
-
-  This method is required by the RAD Studio IDE in order to load the plugin as a package.
-
-  @precon  None.
-  @postcon Creates the plugin wizard.
-
-**)
-Procedure Register;
-
-Begin
-  RegisterPackageWizard(TDWCSWizard.Create);
-End;
+  DebuggingTools.Wizard;
 
 (**
 
@@ -47,6 +33,9 @@ End;
 
   @precon  None.
   @postcon Creates the plugin.
+
+  @nocheck MissingCONSTInParam
+  @nohint  Terminate
 
   @param   BorlandIDEServices as an IBorlandIDEServices as a constant
   @param   RegisterProc       as a TWizardRegisterProc
@@ -60,7 +49,21 @@ Function InitWizard(Const BorlandIDEServices: IBorlandIDEServices;
 
 Begin
   Result := BorlandIDEServices <> Nil;
-  RegisterProc(TDWCSWizard.Create);
+  RegisterProc(TDDTWizard.Create);
+End;
+
+(**
+
+  This method is required by the RAD Studio IDE in order to load the plugin as a package.
+
+  @precon  None.
+  @postcon Creates the plugin wizard.
+
+**)
+Procedure Register;
+
+Begin
+  RegisterPackageWizard(TDDTWizard.Create);
 End;
 
 End.

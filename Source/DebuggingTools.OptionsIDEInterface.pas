@@ -4,11 +4,11 @@
   options dialogue.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    17 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.OptionsIDEInterface;
+Unit DebuggingTools.OptionsIDEInterface;
 
 Interface
 
@@ -18,21 +18,21 @@ Interface
 
 Uses
   ToolsAPI,
-  DebugWithCodeSite.OptionsFrame,
+  DebuggingTools.OptionsFrame,
   Forms,
-  DebugWithCodeSite.Interfaces;
+  DebuggingTools.Interfaces;
 
 Type
   (** A class which implements the INTAAddingOptions interface to added options frames
       to the IDEs options dialogue. **)
-  TDWCSIDEOptionsHandler = Class(TInterfacedObject, IUnknown, INTAAddInOptions)
+  TDDTIDEOptionsHandler = Class(TInterfacedObject, IUnknown, INTAAddInOptions)
   Strict Private
     Class Var
       (** A class variable to hold the instance reference for this IDE options handler. **)
-      FDWCSIDEOptions : TDWCSIDEOptionsHandler;
+      FDDTIDEOptions : TDDTIDEOptionsHandler;
   Strict Private
-    FDWCSOptionsFrame  : TframeDWCSOptions;
-    FDWCSPluginOptions : IDWCSPluginOptions;
+    FDDTOptionsFrame  : TframeDDTOptions;
+    FDDTPluginOptions : IDDTPluginOptions;
   Strict Protected
     Procedure DialogClosed(Accepted: Boolean);
     Procedure FrameCreated(AFrame: TCustomFrame);
@@ -43,8 +43,8 @@ Type
     Function  IncludeInIDEInsight: Boolean;
     Function  ValidateContents: Boolean;
   Public
-    Constructor Create(Const PluginOptions : IDWCSPluginOptions);
-    Class Procedure AddOptionsFrameHandler(Const PluginOptions : IDWCSPluginOptions);
+    Constructor Create(Const PluginOptions : IDDTPluginOptions);
+    Class Procedure AddOptionsFrameHandler(Const PluginOptions : IDDTPluginOptions);
     Class Procedure RemoveOptionsFrameHandler;
   End;
 {$ENDIF}
@@ -58,7 +58,7 @@ Uses
   CodeSiteLogging,
   {$ENDIF}
   {$IFDEF DXE20}System.SysUtils{$ELSE}SysUtils{$ENDIF},
-  DebugWithCodeSite.Types;
+  DebuggingTools.Types;
 
 (**
 
@@ -67,18 +67,18 @@ Uses
   @precon  None.
   @postcon The IDE options handler is installed into the IDE.
 
-  @param   PluginOptions as an IDWCSPluginOptions as a constant
+  @param   PluginOptions as an IDDTPluginOptions as a constant
 
 **)
-Class Procedure TDWCSIDEOptionsHandler.AddOptionsFrameHandler(Const PluginOptions : IDWCSPluginOptions);
+Class Procedure TDDTIDEOptionsHandler.AddOptionsFrameHandler(Const PluginOptions : IDDTPluginOptions);
 
 Var
   EnvironmentOptionsServices : INTAEnvironmentOptionsServices;
 
 Begin
-  FDWCSIDEOptions := TDWCSIDEOptionsHandler.Create(PluginOptions);
+  FDDTIDEOptions := TDDTIDEOptionsHandler.Create(PluginOptions);
   If Supports(BorlandIDEServices, INTAEnvironmentOptionsServices, EnvironmentOptionsServices) Then
-    EnvironmentOptionsServices.RegisterAddInOptions(FDWCSIDEOptions);
+    EnvironmentOptionsServices.RegisterAddInOptions(FDDTIDEOptions);
 End;
 
 (**
@@ -88,14 +88,14 @@ End;
   @precon  None.
   @postcon Stores the Options Read Wrtier interface reference.
 
-  @param   PluginOptions as an IDWCSPluginOptions as a constant
+  @param   PluginOptions as an IDDTPluginOptions as a constant
 
 **)
-Constructor TDWCSIDEOptionsHandler.Create(Const PluginOptions : IDWCSPluginOptions);
+Constructor TDDTIDEOptionsHandler.Create(Const PluginOptions : IDDTPluginOptions);
 
 Begin
   Inherited Create;
-  FDWCSPluginOptions := PluginOptions;
+  FDDTPluginOptions := PluginOptions;
 End;
 
 (**
@@ -106,24 +106,26 @@ End;
   @postcon If the dialogue was accepted and the frame supports the interface then it saves
            the frame settings.
 
+  @nocheck MissingCONSTInParam
+
   @param   Accepted as a Boolean
 
 **)
-Procedure TDWCSIDEOptionsHandler.DialogClosed(Accepted: Boolean);
+Procedure TDDTIDEOptionsHandler.DialogClosed(Accepted: Boolean);
 
 Var
-  I   : IDWCSOptions;
-  Ops : TDWCSChecks;
+  I   : IDDTOptions;
+  Ops : TDDTChecks;
   strCodeSiteMsg: String;
 
 Begin
   If Accepted Then
-    If Supports(FDWCSOptionsFrame, IDWCSOptions, I) Then
+    If Supports(FDDTOptionsFrame, IDDTOptions, I) Then
       Begin
         I.SaveOptions(Ops, strCodeSiteMsg);
-        FDWCSPluginOptions.CodeSiteTemplate := strCodeSiteMsg;
-        FDWCSPluginOptions.CheckOptions := Ops;
-        FDWCSPluginOptions.SaveSettings;
+        FDDTPluginOptions.CodeSiteTemplate := strCodeSiteMsg;
+        FDDTPluginOptions.CheckOptions := Ops;
+        FDDTPluginOptions.SaveSettings;
       End;
 End;
 
@@ -134,22 +136,24 @@ End;
   @precon  None.
   @postcon If the frame supports the interface its settings are loaded.
 
+  @nocheck MissingCONSTInParam
+
   @param   AFrame as a TCustomFrame
 
 **)
-Procedure TDWCSIDEOptionsHandler.FrameCreated(AFrame: TCustomFrame);
+Procedure TDDTIDEOptionsHandler.FrameCreated(AFrame: TCustomFrame);
 
 Var
-  I : IDWCSOptions;
-  Options : TDWCSChecks;
+  I : IDDTOptions;
+  Options : TDDTChecks;
   strCodeSiteMsg : String;
 
 Begin
-  FDWCSOptionsFrame := AFrame As TframeDWCSOptions;
-  If Supports(FDWCSOptionsFrame, IDWCSOptions, I) Then
+  FDDTOptionsFrame := AFrame As TframeDDTOptions;
+  If Supports(FDDTOptionsFrame, IDDTOptions, I) Then
     Begin
-      Options := FDWCSPluginOptions.CheckOptions;
-      strCodeSiteMsg := FDWCSPluginOptions.CodeSiteTemplate;
+      Options := FDDTPluginOptions.CheckOptions;
+      strCodeSiteMsg := FDDTPluginOptions.CodeSiteTemplate;
       I.LoadOptions(Options, strCodeSiteMsg);
     End;
 End;
@@ -165,7 +169,7 @@ End;
   @return  a String
 
 **)
-Function TDWCSIDEOptionsHandler.GetArea: String;
+Function TDDTIDEOptionsHandler.GetArea: String;
 
 Begin
   Result := '';
@@ -182,10 +186,13 @@ End;
   @return  a String
 
 **)
-Function TDWCSIDEOptionsHandler.GetCaption: String;
+Function TDDTIDEOptionsHandler.GetCaption: String;
+
+ResourceString
+  strDebugWithCodeSite = 'Debug With CodeSite';
 
 Begin
-  Result := 'Debug With CodeSite';
+  Result := strDebugWithCodeSite;
 End;
 
 (**
@@ -199,10 +206,10 @@ End;
   @return  a TCustomFrameClass
 
 **)
-Function TDWCSIDEOptionsHandler.GetFrameClass: TCustomFrameClass;
+Function TDDTIDEOptionsHandler.GetFrameClass: TCustomFrameClass;
 
 Begin
-  Result := TframeDWCSOptions;
+  Result := TframeDDTOptions;
 End;
 
 (**
@@ -215,7 +222,7 @@ End;
   @return  an Integer
 
 **)
-Function TDWCSIDEOptionsHandler.GetHelpContext: Integer;
+Function TDDTIDEOptionsHandler.GetHelpContext: Integer;
 
 Begin
   Result := 0;
@@ -232,7 +239,7 @@ End;
   @return  a Boolean
 
 **)
-Function TDWCSIDEOptionsHandler.IncludeInIDEInsight: Boolean;
+Function TDDTIDEOptionsHandler.IncludeInIDEInsight: Boolean;
 
 Begin
   Result := True;
@@ -246,14 +253,14 @@ End;
   @postcon The IDE options handler is removed from the IDE.
 
 **)
-Class Procedure TDWCSIDEOptionsHandler.RemoveOptionsFrameHandler;
+Class Procedure TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
 
 Var
   EnvironmentOptionsServices : INTAEnvironmentOptionsServices;
 
 Begin
   If Supports(BorlandIDEServices, INTAEnvironmentOptionsServices, EnvironmentOptionsServices) Then
-    EnvironmentOptionsServices.UnregisterAddInOptions(FDWCSIDEOptions);
+    EnvironmentOptionsServices.UnregisterAddInOptions(FDDTIDEOptions);
 End;
 
 (**
@@ -266,7 +273,7 @@ End;
   @return  a Boolean
 
 **)
-Function TDWCSIDEOptionsHandler.ValidateContents: Boolean;
+Function TDDTIDEOptionsHandler.ValidateContents: Boolean;
 
 Begin
   Result := True;

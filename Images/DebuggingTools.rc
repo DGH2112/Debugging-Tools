@@ -1,0 +1,13 @@
+/*
+
+  This is a Windows Resource File which generates a Splash Screen Icons for the
+  RAD Studio IDEs.
+
+  @Author  David Hoyle
+  @Version 1.3
+  @Date    11 Aug 2019
+
+*/
+DDTSplashScreenBitMap48x48 BITMAP "..\Images\DDTSplashScreenBM48x48.bmp"
+DDTSplashScreenBitMap24x24 BITMAP "..\Images\DDTSplashScreenBM24x24.bmp"
+DDTMenuBitMap16x16         BITMAP "..\Images\DDTMenuBitMap16x16.bmp"

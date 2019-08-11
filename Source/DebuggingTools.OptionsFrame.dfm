@@ -1,4 +1,4 @@
-object frameDWCSOptions: TframeDWCSOptions
+object frameDDTOptions: TframeDDTOptions
   Left = 0
   Top = 0
   Width = 490
@@ -18,11 +18,12 @@ object frameDWCSOptions: TframeDWCSOptions
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
+    ExplicitWidth = 237
   end
   object lblCodeSiteOptions: TLabel
     AlignWithMargins = True
     Left = 3
-    Top = 46
+    Top = 49
     Width = 484
     Height = 13
     Align = alTop
@@ -33,13 +34,15 @@ object frameDWCSOptions: TframeDWCSOptions
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
+    ExplicitTop = 46
+    ExplicitWidth = 162
   end
   object lvOptions: TListView
     AlignWithMargins = True
     Left = 3
-    Top = 62
+    Top = 68
     Width = 484
-    Height = 262
+    Height = 256
     Align = alClient
     Checkboxes = True
     Columns = <
@@ -57,7 +60,7 @@ object frameDWCSOptions: TframeDWCSOptions
   object edtCodeSiteMsg: TEdit
     AlignWithMargins = True
     Left = 3
-    Top = 19
+    Top = 22
     Width = 484
     Height = 21
     Align = alTop

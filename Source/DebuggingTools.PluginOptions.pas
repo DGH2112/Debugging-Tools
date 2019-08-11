@@ -3,28 +3,28 @@
   This module contains a class to handle the plug-ins settings.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    17 Sep 2017
+  @Version 1.3
+  @Date    11 Aug 2019
 
 **)
-Unit DebugWithCodeSite.PluginOptions;
+Unit DebuggingTools.PluginOptions;
 
 Interface
 
 Uses
-  DebugWithCodeSite.Types,
-  DebugWithCodeSite.Interfaces;
+  DebuggingTools.Types,
+  DebuggingTools.Interfaces;
 
 Type
   (** A class to handle the plug-ins settings. **)
-  TDWCSPluginOptions = Class(TInterfacedObject, IDWCSPluginOptions)
+  TDDTPluginOptions = Class(TInterfacedObject, IDDTPluginOptions)
   Strict Private
-    FChecksOptions: TDWCSChecks;
+    FChecksOptions: TDDTChecks;
     FCodeSiteTemplate: String;
   Strict Protected
-    Function  GetCheckOptions: TDWCSChecks;
+    Function  GetCheckOptions: TDDTChecks;
     Function  GetCodeSiteTemplate: String;
-    Procedure SetCheckOptions(Const setCheckOptions: TDWCSChecks);
+    Procedure SetCheckOptions(Const setCheckOptions: TDDTChecks);
     Procedure SetCodeSiteTemplate(Const strCodeSiteTemplate: String);
     Procedure LoadSettings;
     Procedure SaveSettings;
@@ -43,22 +43,31 @@ Uses
 Const
   (** The registry key under which the settings are stored. **)
   strRegKey = 'Software\Season''s Fall\Debug with CodeSite\';
+  (** A constant to define the INI Section Name for the settings. **)
+  strSetupINISection = 'Setup';
+  (** A constant to define the INI Key Name for the Code Site Message. **)
+  strCodeSiteMsgINIKey = 'CodeSiteMsg';
+  (** A constant to define the INI Key Name for the Code Site Options. **)
+  strOptionsINIKey = 'Options';
 
-{ TDWCSPluginOptions }
+{ TDDTPluginOptions }
 
 (**
 
-  A constructor for the TDWCSPluginOptions class.
+  A constructor for the TDDTPluginOptions class.
 
   @precon  None.
   @postcon Initialises the settings;
 
 **)
-Constructor TDWCSPluginOptions.Create;
+Constructor TDDTPluginOptions.Create;
+
+Const
+  strCodeSiteSendMsg = 'CodeSite.Send(''%s'', %s)';
 
 Begin
-  FChecksOptions := [dwcscCodeSiteLogging .. dwcscBreak];
-  FCodeSiteTemplate := 'CodeSite.Send(''%s'', %s)';
+  FChecksOptions := [DDTcCodeSiteLogging .. DDTcBreak];
+  FCodeSiteTemplate := strCodeSiteSendMsg;
   LoadSettings;
 End;
 
@@ -69,10 +78,10 @@ End;
   @precon  None.
   @postcon Returns the check options.
 
-  @return  a TDWCSChecks
+  @return  a TDDTChecks
 
 **)
-Function TDWCSPluginOptions.GetCheckOptions: TDWCSChecks;
+Function TDDTPluginOptions.GetCheckOptions: TDDTChecks;
 
 Begin
   Result := FChecksOptions;
@@ -88,7 +97,7 @@ End;
   @return  a String
 
 **)
-Function TDWCSPluginOptions.GetCodeSiteTemplate: String;
+Function TDDTPluginOptions.GetCodeSiteTemplate: String;
 
 Begin
   Result := FCodeSiteTemplate;
@@ -102,7 +111,7 @@ End;
   @postcon  The plug-ins settings are loaded.
 
 **)
-Procedure TDWCSPluginOptions.LoadSettings;
+Procedure TDDTPluginOptions.LoadSettings;
 
 Var
   R : TRegIniFile;
@@ -110,8 +119,9 @@ Var
 Begin
   R := TRegIniFile.Create(strRegKey);
   Try
-    FCodeSiteTemplate := R.ReadString('Setup', 'CodeSiteMsg', FCodeSiteTemplate);
-    FChecksOptions := TDWCSChecks(Byte(R.ReadInteger('Setup', 'Options', Byte(FChecksOptions))));
+    FCodeSiteTemplate := R.ReadString(strSetupINISection, strCodeSiteMsgINIKey, FCodeSiteTemplate);
+    FChecksOptions := TDDTChecks(Byte(R.ReadInteger(strSetupINISection, strOptionsINIKey,
+      Byte(FChecksOptions))));
   Finally
     R.Free;
   End;
@@ -125,7 +135,7 @@ End;
   @postcon The settings are saved.
 
 **)
-Procedure TDWCSPluginOptions.SaveSettings;
+Procedure TDDTPluginOptions.SaveSettings;
 
 Var
   R: TRegIniFile;
@@ -133,8 +143,8 @@ Var
 Begin
   R := TRegIniFile.Create(strRegKey);
   Try
-    R.WriteString('Setup', 'CodeSiteMsg', FCodeSiteTemplate);
-    R.WriteInteger('Setup', 'Options', Byte(FChecksOptions));
+    R.WriteString(strSetupINISection, strCodeSiteMsgINIKey, FCodeSiteTemplate);
+    R.WriteInteger(strSetupINISection, strOptionsINIKey, Byte(FChecksOptions));
   Finally
     R.Free;
   End;
@@ -147,10 +157,10 @@ End;
   @precon  None.
   @postcon Updates the check options.
 
-  @param   setCheckOptions as a TDWCSChecks as a constant
+  @param   setCheckOptions as a TDDTChecks as a constant
 
 **)
-Procedure TDWCSPluginOptions.SetCheckOptions(Const setCheckOptions: TDWCSChecks);
+Procedure TDDTPluginOptions.SetCheckOptions(Const setCheckOptions: TDDTChecks);
 
 Begin
   FChecksOptions := setCheckOptions;
@@ -166,7 +176,7 @@ End;
   @param   strCodeSiteTemplate as a String as a constant
 
 **)
-Procedure TDWCSPluginOptions.SetCodeSiteTemplate(Const strCodeSiteTemplate: String);
+Procedure TDDTPluginOptions.SetCodeSiteTemplate(Const strCodeSiteTemplate: String);
 
 Begin
   FCodeSiteTemplate := strCodeSiteTemplate;
