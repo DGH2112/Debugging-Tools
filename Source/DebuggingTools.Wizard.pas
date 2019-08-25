@@ -14,12 +14,10 @@ Interface
 {$INCLUDE CompilerDefinitions.Inc}
 
 Uses
-  Classes,
   ToolsAPI,
-  Menus,
-  ActnList,
-  ExtCtrls,
-  ImgList,
+  System.Classes,
+  VCL.ExtCtrls,
+  VCL.ImgList,
   DebuggingTools.Types,
   DebuggingTools.Interfaces;
 
@@ -46,7 +44,6 @@ Type
     Function  AddImageToList(Const ImageList : TCustomImageList) : Integer;
     Procedure AddMenuToEditorContextMenu;
     Procedure MenuInstallerTimer(Sender : TObject);
-    Procedure DebugWithCodeSiteClick(Sender : TObject);
   Public
     Constructor Create;
     Destructor Destroy; Override;
@@ -58,15 +55,14 @@ Uses
   {$IFDEF DEBUG}
   CodeSiteLogging,
   {$ENDIF}
-  SysUtils,
-  Windows,
-  Controls,
-  Graphics,
-  Forms,
-  ActnPopup,
-  DebuggingTools.Functions,
-  Dialogs,
-  Registry,
+  System.SysUtils,
+  System.Win.Registry,
+  VCL.Controls,
+  VCL.Graphics,
+  VCL.Forms,
+  VCL.ActnPopup,
+  VCL.Menus,
+  Winapi.Windows,
   DebuggingTools.AboutBox,
   DebuggingTools.SplashScreen,
   DebuggingTools.OptionsIDEInterface,
@@ -93,13 +89,13 @@ Const
   strImageName = 'DDTMenuBitMap16x16';
 
 Var
-  BM       : TBitMap;
+  BM : VCL.Graphics.TBitMap;
 
 Begin
   Result := -1;
   If FindResource(hInstance, strImageName, RT_BITMAP) > 0 Then
     Begin
-      BM := TBitMap.Create;
+      BM := VCL.Graphics.TBitMap.Create;
       Try
         BM.LoadFromResourceName(hInstance, strImageName);
         Result := ImageList.AddMasked(BM, clLime);
@@ -202,7 +198,7 @@ Begin
           MenuItem := TMenuItem.Create(CM);
           MenuItem.Name := strMenuName;
           MenuItem.Caption := strDebugWithCodeSiteCaption;
-          MenuItem.OnClick := DebugWithCodeSiteClick;
+          //: @debug MenuItem.OnClick := DebugWithCodeSiteClick;
           MenuItem.ImageIndex := iImageIndex;
           CM.Items.Add(MenuItem);
         End;
@@ -261,70 +257,12 @@ Begin
   AddAboutBoxEntry;
   FPluginOptions := TDDTPluginOptions.Create;
   TDDTIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
-  FKeyboardBindingIndex := TDDTKeyboardBindings.AddKeyboardBindings;
+  FKeyboardBindingIndex := TDDTKeyboardBindings.AddKeyboardBindings(FPluginOptions);
   FMenuInstalled := False;
   FMenuTimer := TTimer.Create(Nil);
   FMenuTimer.Interval := iTimerInterval;
   FMenuTimer.OnTimer := MenuInstallerTimer;
   FMenuTimer.Enabled := True;
-End;
-
-(**
-
-  This is the on click event handler for the editor Debug With CodeSite contetx menu.
-
-  @precon  None.
-  @postcon Adds a breakpoint on the line of the cursor with CodeSite information in the EvalExpression
-                  property for the identifier at the cursor.
-
-  @param   Sender as a TObject
-
-**)
-Procedure TDDTWizard.DebugWithCodeSiteClick(Sender: TObject);
-
-ResourceString
-  strThereNoIdentifierAtCursorPosition = 'There is no identifier at the cursor position!';
-
-Var
-  ES : IOTAEditorServices;
-  DS : IOTADebuggerServices;
-  CP: TOTAEditPos;
-  BP: IOTABreakpoint;
-  strIdentifierAtCursor: String;
-  strMsg : String;
-  iPos: Integer;
-
-Begin
-  If Supports(BorlandIDEServices, IOTAEditorServices, ES) Then
-    If Supports(BorlandIDEServices, IOTADebuggerServices, DS) Then
-      Begin
-        CP := ES.TopView.CursorPos;
-        strIdentifierAtCursor := GetIdentifierAtCursor;
-        If strIdentifierAtCursor <> '' Then
-          Begin
-            BP := DS.NewSourceBreakpoint(ES.TopBuffer.FileName, CP.Line, Nil);
-            strMsg := FPluginOptions.CodeSiteTemplate;
-            iPos := Pos('%s', strMsg);
-            While iPos > 0 Do
-              Begin
-                strMsg := Copy(strMsg, 1, Pred(iPos)) + strIdentifierAtCursor +
-                  Copy(strMsg, iPos + 2, Length(strMsg) - iPos - 1);
-                iPos := Pos('%s', strMsg);
-              End;
-            BP.EvalExpression := strMsg;
-            BP.LogResult := DDTcLogResult In FPluginOptions.CheckOptions;
-            BP.DoBreak := DDTcBreak In FPluginOptions.CheckOptions;
-            If DDTcCodeSiteLogging In FPluginOptions.CheckOptions Then
-              CheckCodeSiteLogging;
-            If DDTcDebuggingDCUs In FPluginOptions.CheckOptions Then
-              CheckDebuggingDCUs;
-            If DDTcLibraryPath In FPluginOptions.CheckOptions Then
-              CheckLibraryPath;
-            If DDTcEditBreakpoint In FPluginOptions.CheckOptions Then
-              BP.Edit(True);
-          End Else
-            MessageDlg(strThereNoIdentifierAtCursorPosition, mtWarning, [mbOK], 0);
-      End;
 End;
 
 (**
@@ -445,7 +383,7 @@ End;
 Procedure TDDTWizard.MenuInstallerTimer(Sender: TObject);
 
 Begin
-  AddMenuToEditorContextMenu;
+  //: @debug This doesn't work in new IDEs => AddMenuToEditorContextMenu;
 End;
 
 (**

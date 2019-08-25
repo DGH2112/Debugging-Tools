@@ -13,12 +13,14 @@ Interface
 
 Uses
   ToolsAPI,
-  System.Classes;
+  System.Classes,
+  DebuggingTools.Interfaces;
 
 Type
   (** A class to implement the editor keyboard bindings. **)
   TDDTKeyboardBindings = Class(TNotifierObject, IOTAKeyboardBinding)
   Strict Private
+    FPluginOptions : IDDTPluginOptions;
   Strict Protected
     // IOTAKeyboardBinding
     Procedure BindKeyboard(Const BindingServices: IOTAKeyBindingServices);
@@ -28,8 +30,11 @@ Type
     // General Methods
     Procedure AddBreakpoint(Const Context : IOTAKeyContext; KeyCode : TShortcut;
       Var BindingResult : TKeyBindingResult);
+    Procedure AddCodeSiteBreakpoint(Const Context : IOTAKeyContext; KeyCode : TShortcut;
+      Var BindingResult : TKeyBindingResult);
   Public
-    Class Function  AddKeyboardBindings : Integer;
+    Constructor Create(Const PluginOptions : IDDTPluginOptions);
+    Class Function  AddKeyboardBindings(Const PluginOptions : IDDTPluginOptions) : Integer;
     Class Procedure RemoveKeyboardBindings(Const iIndex : Integer);
   End;
 
@@ -38,7 +43,7 @@ Implementation
 Uses
   System.SysUtils,
   VCL.Menus,
-  DebuggingTools.OpenToolsAPIFunctions;
+  DebuggingTools.OpenToolsAPIFunctions, DebuggingTools.Types;
 
 (**
 
@@ -113,15 +118,82 @@ End;
 
 (**
 
+  This is the on click event handler for the editor Debug With CodeSite contetx menu.
+
+  @precon  None.
+  @postcon Adds a breakpoint on the line of the cursor with CodeSite information in the EvalExpression 
+           property for the identifier at the cursor. nocheck MissingCONSTInParam nohint Context 
+           KeyCode
+
+  @nocheck MissingCONSTInParam
+  @nohint  Context Keycode
+
+  @param   Context       as an IOTAKeyContext as a constant
+  @param   KeyCode       as a TShortcut
+  @param   BindingResult as a TKeyBindingResult as a reference
+
+**)
+Procedure TDDTKeyboardBindings.AddCodeSiteBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut;
+  Var BindingResult: TKeyBindingResult);
+
+ResourceString
+  strThereNoIdentifierAtCursorPosition = 'There is no identifier at the cursor position!';
+
+Var
+  ES : IOTAEditorServices;
+  DS : IOTADebuggerServices;
+  CP: TOTAEditPos;
+  BP: IOTABreakpoint;
+  strIdentifierAtCursor: String;
+  strMsg : String;
+  iPos: Integer;
+
+Begin
+  If Supports(BorlandIDEServices, IOTAEditorServices, ES) Then
+    If Supports(BorlandIDEServices, IOTADebuggerServices, DS) Then
+      Begin
+        CP := ES.TopView.CursorPos;
+        strIdentifierAtCursor := TDDTOpenToolsAPIFunctions.IdentifierAtCursor;
+        If strIdentifierAtCursor <> '' Then
+          Begin
+            BP := DS.NewSourceBreakpoint(ES.TopBuffer.FileName, CP.Line, Nil);
+            strMsg := FPluginOptions.CodeSiteTemplate;
+            iPos := Pos('%s', strMsg);
+            While iPos > 0 Do
+              Begin
+                strMsg := Copy(strMsg, 1, Pred(iPos)) + strIdentifierAtCursor +
+                  Copy(strMsg, iPos + 2, Length(strMsg) - iPos - 1);
+                iPos := Pos('%s', strMsg);
+              End;
+            BP.EvalExpression := strMsg;
+            BP.LogResult := DDTcLogResult In FPluginOptions.CheckOptions;
+            BP.DoBreak := DDTcBreak In FPluginOptions.CheckOptions;
+            If DDTcCodeSiteLogging In FPluginOptions.CheckOptions Then
+              TDDTOpenToolsAPIFunctions.CheckCodeSiteLogging;
+            If DDTcDebuggingDCUs In FPluginOptions.CheckOptions Then
+              TDDTOpenToolsAPIFunctions.CheckDebuggingDCUs;
+            If DDTcLibraryPath In FPluginOptions.CheckOptions Then
+              TDDTOpenToolsAPIFunctions.CheckLibraryPath;
+            If DDTcEditBreakpoint In FPluginOptions.CheckOptions Then
+              BP.Edit(True);
+          End Else
+            TDDTOpenToolsAPIFunctions.OutputMsg(strThereNoIdentifierAtCursorPosition);
+      End;
+  BindingResult := krHandled;
+End;
+
+(**
+
   This class method installs the keyboard bindings into the IDE.
 
   @precon  None.
   @postcon The keyboard bindings are available in the IDE.
 
+  @param   PluginOptions as an IDDTPluginOptions as a constant
   @return  an Integer
 
 **)
-Class Function TDDTKeyboardBindings.AddKeyboardBindings: Integer;
+Class Function TDDTKeyboardBindings.AddKeyboardBindings(Const PluginOptions : IDDTPluginOptions) : Integer;
 
 Var
   KBS : IOTAKeyboardServices;
@@ -129,7 +201,7 @@ Var
 Begin
   Result := -1;
   If Supports(BorlandIDEServices, IOTAKeyboardServices, KBS) Then
-    Result := KBS.AddKeyboardBinding(TDDTKeyboardBindings.Create);
+    Result := KBS.AddKeyboardBinding(TDDTKeyboardBindings.Create(PluginOptions));
 End;
 
 (**
@@ -146,10 +218,28 @@ End;
 Procedure TDDTKeyboardBindings.BindKeyboard(Const BindingServices: IOTAKeyBindingServices);
 
 Const
-  strCtrlAltShift = 'Ctrl+Shift+F8';
+  strCtrlShiftF8 = 'Ctrl+Shift+F8';
+  strCtrlShiftF7 = 'Ctrl+Shift+F7';
 
 Begin
-  BindingServices.AddKeyBinding([TextToShortCut(strCtrlAltShift)], AddBreakpoint, Nil);
+  BindingServices.AddKeyBinding([TextToShortCut(strCtrlShiftF8)], AddBreakpoint, Nil);
+  BindingServices.AddKeyBinding([TextToShortCut(strCtrlShiftF7)], AddCodeSiteBreakpoint, Nil);
+End;
+
+(**
+
+  A constructor for the TDDTKeyboardBindings class.
+
+  @precon  None.
+  @postcon Stores an interface reference to the plugin options.
+
+  @param   PluginOptions as an IDDTPluginOptions as a constant
+
+**)
+Constructor TDDTKeyboardBindings.Create(Const PluginOptions: IDDTPluginOptions);
+
+Begin
+  FPluginOptions := PluginOptions;
 End;
 
 (**

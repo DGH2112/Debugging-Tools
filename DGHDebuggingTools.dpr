@@ -5,7 +5,7 @@
 
   @Author  David Hoyle
   @Version 1.3
-  @date    11 Aug 2019
+  @date    25 Aug 2019
 
   @nocheck EmptyBeginEnd
 
@@ -37,9 +37,7 @@ uses
   DebuggingTools.OptionsIDEInterface in 'Source\DebuggingTools.OptionsIDEInterface.pas',
   DebuggingTools.OptionsFrame in 'Source\DebuggingTools.OptionsFrame.pas' {frameDDTOptions: TFrame},
   DebuggingTools.Types in 'Source\DebuggingTools.Types.pas',
-  DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas' {;
-
-{$R *.res},
+  DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas',
   DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas',
   DebuggingTools.KeyboardBindings in 'Source\DebuggingTools.KeyboardBindings.pas',
   DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas';
