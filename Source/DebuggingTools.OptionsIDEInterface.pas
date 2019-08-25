@@ -189,7 +189,7 @@ End;
 Function TDDTIDEOptionsHandler.GetCaption: String;
 
 ResourceString
-  strDebugWithCodeSite = 'Debug With CodeSite';
+  strDebugWithCodeSite = 'DGH Debugging Tools.Debug With CodeSite';
 
 Begin
   Result := strDebugWithCodeSite;

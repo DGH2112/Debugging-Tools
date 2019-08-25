@@ -387,11 +387,10 @@ End;
 Function TDDTWizard.GetIDString: String;
 
 Const
-  strSeasonFallMusicDavidHoyleDebugWithCodeSite = 'Season''s Fall Music.David Hoyle.Debug with ' + 
-    'CodeSite';
+  strIDString = 'Season''s Fall Music.David Hoyle.DGH Debugging Tools';
 
 Begin
-  Result := strSeasonFallMusicDavidHoyleDebugWithCodeSite;
+  Result := strIDString;
 End;
 
 (**
@@ -407,7 +406,7 @@ End;
 Function TDDTWizard.GetName: String;
 
 ResourceString
-  strDebugWithCodeSite = 'Debug with CodeSite';
+  strDebugWithCodeSite = 'DGH Debugging Tools';
 
 Begin
   Result := strDebugWithCodeSite;

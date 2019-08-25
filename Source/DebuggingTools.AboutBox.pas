@@ -44,7 +44,6 @@ Var
 Procedure AddAboutBoxEntry;
 
 ResourceString
-  strIDEPlugInDescription = 'An IDE plug-in to added CodeSite debugging via Breakpoints.';
   strSKUBuild = 'SKU Build %d.%d.%d.%d';
 
 Const
@@ -66,7 +65,7 @@ Begin //FI:W519
       Application.Title]),
     strIDEPlugInDescription,
     bmSplashScreen,
-    False,
+    {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
     Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild]));
   {$ENDIF}

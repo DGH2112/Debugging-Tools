@@ -23,7 +23,8 @@ Resourcestring
       entries. **)
   strRevision = ' abcdefghijklmnopqrstuvwxyz';
   (** This resource string is used in the splash screen and about box entries. **)
-  strSplashScreenName = 'Debug with CodeSite %d.%d%s for %s';
+  strSplashScreenName = 'DGH Debugging Tools %d.%d%s for %s';
+  strIDEPlugInDescription = 'A RAD Studio IDE plug-in to added additional debugging tools.';
   (** This resource string is used in the splash screen and about box entries. **)
   strSplashScreenBuild = 'Freeware by David Hoyle (Build %d.%d.%d.%d)';
 
