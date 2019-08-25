@@ -4,7 +4,7 @@
 
   @Author  David Hoyle
   @Version 1.3
-  @Date    11 Aug 2019
+  @Date    25 Aug 2019
 
 **)
 Unit DebuggingTools.Wizard;
@@ -27,9 +27,10 @@ Type
   (** A class which implements the OIOTAWizard interface to provide the plug-ins main IDE wizard. **)
   TDDTWizard = Class(TInterfacedObject, IOTANotifier, IOTAWizard)
   Strict Private
-    FMenuTimer     : TTimer;
-    FMenuInstalled : Boolean;
-    FPluginOptions : IDDTPluginOptions;
+    FMenuTimer            : TTimer;
+    FMenuInstalled        : Boolean;
+    FPluginOptions        : IDDTPluginOptions;
+    FKeyboardBindingIndex : Integer;
   Strict Protected
     // IOTAWizard
     Procedure Execute;
@@ -69,7 +70,8 @@ Uses
   DebuggingTools.AboutBox,
   DebuggingTools.SplashScreen,
   DebuggingTools.OptionsIDEInterface,
-  DebuggingTools.PluginOptions;
+  DebuggingTools.PluginOptions,
+  DebuggingTools.KeyboardBindings;
 
 { TDDTWizard }
 
@@ -259,6 +261,7 @@ Begin
   AddAboutBoxEntry;
   FPluginOptions := TDDTPluginOptions.Create;
   TDDTIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
+  FKeyboardBindingIndex := TDDTKeyboardBindings.AddKeyboardBindings;
   FMenuInstalled := False;
   FMenuTimer := TTimer.Create(Nil);
   FMenuTimer.Interval := iTimerInterval;
@@ -336,6 +339,7 @@ Destructor TDDTWizard.Destroy;
 
 Begin
   FPluginOptions.SaveSettings;
+  TDDTKeyboardBindings.RemoveKeyboardBindings(FKeyboardBindingIndex);
   TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
   RemoveAboutBoxEntry;
   FMenuTimer.Free;

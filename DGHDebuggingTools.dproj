@@ -124,6 +124,8 @@
 {$R *.res</Form>
         </DCCReference>
         <DCCReference Include="Source\DebuggingTools.PluginOptions.pas"/>
+        <DCCReference Include="Source\DebuggingTools.KeyboardBindings.pas"/>
+        <DCCReference Include="Source\DebuggingTools.OpenToolsAPIFunctions.pas"/>
         <RcCompile Include="DWCSITHVerInfo.RC">
             <Form>DWCSITHVerInfo.res</Form>
         </RcCompile>

@@ -40,7 +40,9 @@ uses
   DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas' {;
 
 {$R *.res},
-  DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas';
+  DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas',
+  DebuggingTools.KeyboardBindings in 'Source\DebuggingTools.KeyboardBindings.pas',
+  DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas';
 
 {$R *.res}
 
