@@ -5,7 +5,7 @@
 
   @Author  David Hoyle
   @Version 1.0
-  @Date    25 Aug 2019
+  @Date    28 Aug 2019
   
 **)
 Unit DebuggingTools.OpenToolsAPIFunctions;
@@ -45,6 +45,7 @@ Uses
   {$IFDEF DEBUG}
   CodeSiteLogging,
   {$ENDIF DEBUG}
+  DCCStrs,
   System.SysUtils,
   System.Classes,
   System.RegularExpressions,
@@ -181,19 +182,26 @@ Begin
     End;
 End;
 
+(**
+
+  This method checks that the CodeSiteLogging.dcu is on the project or IDEs search paths.
+
+  @precon  None.
+  @postcon Outputs a message if the CodeSiteLogging.dcu file is not found on the search paths.
+
+**)
 Class Procedure TDDTOpenToolsAPIFunctions.CheckLibraryPath;
 
 ResourceString
   strCodeSiteLoggingNotFound = '''CodeSiteLogging.dcu'' not found in your library paths!';
 
 Const
-  strProjectSrcDir = 'SrcDir';
   strDCCLibraryPath = 'LibraryPath';
   strCodeSiteLoggingDcu = 'CodeSiteLogging.dcu';
 
 Var
   slSearchLibrary: TStringList;
-  PO: IOTAProjectOptions;
+  POC: IOTAProjectOptionsConfigurations;
   S : IOTAServices;
   BDSMacros: TRegEx;
   M: TMatch;
@@ -203,10 +211,11 @@ Var
 Begin
   slSearchLibrary := TStringList.Create;
   Try
-    If Supports(ActiveProject.ProjectOptions, IOTAProjectOptions, PO) Then
-      slSearchLibrary.Add(StringReplace(VarToStr(PO.Values[strProjectSrcDir]), ';', #13#10,
-        [rfReplaceAll]));
+    If Supports(ActiveProject.ProjectOptions, IOTAProjectOptionsConfigurations, POC) Then
+      slSearchLibrary.Add(
+        StringReplace(POC.ActiveConfiguration.Value[sUnitSearchPath], ';', #13#10, [rfReplaceAll]));
     If Supports(BorlandIDEServices, IOTAServices, S) Then
+      //                                                                        s
       slSearchLibrary.Add(StringReplace(VarToStr(S.GetEnvironmentOptions.Values[strDCCLibraryPath]), ';',
         #13#10, [rfReplaceAll]));
     slMacros := TStringList.Create;
