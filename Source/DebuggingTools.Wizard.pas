@@ -54,6 +54,8 @@ Type
     FImageIndex           : Integer;
     FEditorPopupMethod    : TMethod;
     FDebuggingToolsMenu   : TMenuItem;
+    FOptionsFrame         : INTAAddInOptions;
+    FParentFrame          : INTAAddInOptions;
   Strict Protected
     // IOTAWizard
     Procedure Execute;
@@ -163,7 +165,8 @@ Begin
   AddSplashScreen;
   AddAboutBoxEntry;
   FPluginOptions := TDDTPluginOptions.Create;
-  TDDTIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
+  FOptionsFrame := TDDTIDEOptionsHandler.AddOptionsFrameHandler(ftOptions, FPluginOptions);
+  FParentFrame := TDDTIDEOptionsHandler.AddOptionsFrameHandler(ftParent, FPluginOptions);
   FKeyboardBindingIndex := TDDTKeyboardBindings.AddKeyboardBindings(FPluginOptions);
   FEditorPopupMethod.Data := Nil;
   FMenuInstalled := False;
@@ -259,7 +262,8 @@ Begin
   UnhookEditorPopupMenu;
   FPluginOptions.SaveSettings;
   TDDTKeyboardBindings.RemoveKeyboardBindings(FKeyboardBindingIndex);
-  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
+  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler(FOptionsFrame);
+  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler(FParentFrame);
   RemoveAboutBoxEntry;
   FMenuTimer.Free;
   Inherited Destroy;

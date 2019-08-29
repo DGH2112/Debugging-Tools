@@ -61,7 +61,8 @@ uses
   DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas',
   DebuggingTools.KeyboardBindings in 'Source\DebuggingTools.KeyboardBindings.pas',
   DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas',
-  DebuggingTools.DebuggingTools in 'Source\DebuggingTools.DebuggingTools.pas';
+  DebuggingTools.DebuggingTools in 'Source\DebuggingTools.DebuggingTools.pas',
+  DebuggingTools.ParentFrame in 'Source\DebuggingTools.ParentFrame.pas' {fmDDTParentFrame: TFrame};
 
 {$R *.res}
 
