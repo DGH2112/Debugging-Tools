@@ -43,9 +43,15 @@ Resourcestring
   strRevision = ' abcdefghijklmnopqrstuvwxyz';
   (** This resource string is used in the splash screen and about box entries. **)
   strSplashScreenName = 'DGH Debugging Tools %d.%d%s for %s';
-  strIDEPlugInDescription = 'A RAD Studio IDE plug-in to added additional debugging tools.';
+  (** A resource string to provide a description of the plug-in. **)
+  strIDEPlugInDescription = 'A RAD Studio IDE plug-in to added additional debugging tools to the IDE.';
+  {$IFDEF DEBUG}
   (** This resource string is used in the splash screen and about box entries. **)
-  strSplashScreenBuild = 'Freeware by David Hoyle (Build %d.%d.%d.%d)';
+  strSplashScreenBuild = 'David Hoyle (c) 2019 License GNU GPL 3 (DEBUG Build %d.%d.%d.%d)';
+  {$ELSE}
+  (** This resource string is used in the splash screen and about box entries. **)
+  strSplashScreenBuild = 'David Hoyle (c) 2019 License GNU GPL 3 (Build %d.%d.%d.%d)';
+  {$ENDIF DEBUG}
 
 Const
   (** A constant to define the failed state for a notifier not installed. **)
