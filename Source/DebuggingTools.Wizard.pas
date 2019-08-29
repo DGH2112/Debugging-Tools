@@ -281,7 +281,7 @@ End;
 **)
 Procedure TDDTWizard.Execute;
 
-Begin
+Begin //FI:W519
   // Do nothing
 End;
 

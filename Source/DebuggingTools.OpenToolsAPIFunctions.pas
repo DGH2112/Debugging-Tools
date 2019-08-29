@@ -366,19 +366,19 @@ End;
 Class Function TDDTOpenToolsAPIFunctions.IdentifierAtCursor : String;
 
 Var
-  SourceEditor : IOTASourceEditor;
+  SE : IOTASourceEditor;
   EditPos: TOTAEditPos;
 
 Begin
   Result := '';
-  SourceEditor := ActiveSourceEditor;
-  EditPos := SourceEditor.EditViews[0].CursorPos;
-  If Assigned(SourceEditor) Then
+  SE := ActiveSourceEditor;
+  EditPos := SE.EditViews[0].CursorPos;
+  If Assigned(SE) Then
     Begin
-      If SourceEditor.EditViews[0].CharPosToPos(SourceEditor.BlockStart) < SourceEditor.EditViews[0].CharPosToPos(SourceEditor.BlockAfter) Then
-        Result := SelectedText(SourceEditor)
+      If SE.EditViews[0].CharPosToPos(SE.BlockStart) < SE.EditViews[0].CharPosToPos(SE.BlockAfter) Then
+        Result := SelectedText(SE)
       Else
-        Result := IdentifierAtCursor(SourceEditor, EditPos);
+        Result := IdentifierAtCursor(SE, EditPos);
     End;
 End;
 
