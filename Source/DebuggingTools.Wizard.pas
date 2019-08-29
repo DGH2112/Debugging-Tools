@@ -4,7 +4,7 @@
 
   @Author  David Hoyle
   @Version 1.3
-  @Date    25 Aug 2019
+  @Date    29 Aug 2019
 
 **)
 Unit DebuggingTools.Wizard;
@@ -16,34 +16,43 @@ Interface
 Uses
   ToolsAPI,
   System.Classes,
+  VCL.Forms,
+  VCL.Menus,
   VCL.ExtCtrls,
   VCL.ImgList,
+  VCL.ActnPopup,
   DebuggingTools.Types,
   DebuggingTools.Interfaces;
 
 Type
   (** A class which implements the OIOTAWizard interface to provide the plug-ins main IDE wizard. **)
-  TDDTWizard = Class(TInterfacedObject, IOTANotifier, IOTAWizard)
+  TDDTWizard = Class(TNotifierObject, IOTANotifier, IOTAWizard)
   Strict Private
     FMenuTimer            : TTimer;
     FMenuInstalled        : Boolean;
     FPluginOptions        : IDDTPluginOptions;
     FKeyboardBindingIndex : Integer;
+    FImageIndex           : Integer;
+    FEditorPopupMethod    : TMethod;
+    FDebuggingToolsMenu   : TMenuItem;
   Strict Protected
     // IOTAWizard
     Procedure Execute;
     Function  GetIDString: String;
     Function  GetName: String;
     Function  GetState: TWizardState;
-    // IOTANotifier
-    Procedure AfterSave;
-    Procedure BeforeSave;
-    Procedure Destroyed;
-    Procedure Modified;
     // General Methods
     Function  AddImageToList(Const ImageList : TCustomImageList) : Integer;
-    Procedure AddMenuToEditorContextMenu;
     Procedure MenuInstallerTimer(Sender : TObject);
+    Procedure HookEditorPopupMenu;
+    Procedure UnhookEditorPopupMenu;
+    Procedure DebuggingToolsPopupEvent(Sender : TObject);
+    Procedure AddBreakpoint(Sender : TObject);
+    Procedure DebugWithCodeSite(Sender : TObject);
+    Function  FindEditorPopup : TPopupActionBar;
+    Function  FindComponent(Const OwnerComponent : TComponent; Const strName : String;
+      Const ClsType : TClass) : TComponent;
+    Function  FindEditWindow : TForm;
   Public
     Constructor Create;
     Destructor Destroy; Override;
@@ -59,17 +68,29 @@ Uses
   System.Win.Registry,
   VCL.Controls,
   VCL.Graphics,
-  VCL.Forms,
-  VCL.ActnPopup,
-  VCL.Menus,
   Winapi.Windows,
   DebuggingTools.AboutBox,
   DebuggingTools.SplashScreen,
   DebuggingTools.OptionsIDEInterface,
   DebuggingTools.PluginOptions,
-  DebuggingTools.KeyboardBindings;
+  DebuggingTools.KeyboardBindings,
+  DebuggingTools.DebuggingTools;
 
-{ TDDTWizard }
+(**
+
+  This is an on click event handler for the Add Breakpoint IDE context menu.
+
+  @precon  None.
+  @postcon Adds a breakpoint at the curssor position in the active source code editor.
+
+  @param   Sender as a TObject
+
+**)
+Procedure TDDTWizard.AddBreakpoint(Sender: TObject);
+
+Begin
+  TDDTDebuggingTools.AddBreakpoint;
+End;
 
 (**
 
@@ -86,7 +107,7 @@ Uses
 Function TDDTWizard.AddImageToList(Const ImageList : TCustomImageList): Integer;
 
 Const
-  strImageName = 'DDTMenuBitMap16x16';
+  strImageName = 'DDTMenuBitMap16x16'; //: @todo Need individual images for the menus...
 
 Var
   BM : VCL.Graphics.TBitMap;
@@ -103,139 +124,6 @@ Begin
         BM.Free;
       End;
     End;
-End;
-
-(**
-
-  This method adds the Debug with CodeSite context menu to the editors menu.
-
-  @precon  None.
-  @postcon The contect menu is added and disables the timer if the editor context menu it found.
-
-**)
-Procedure TDDTWizard.AddMenuToEditorContextMenu;
-
-  (**
-
-    This method searches the screens objects forms for the form with the given class name.
-
-    @precon  None.
-    @postcon The form reference is returned IF found else nil.
-
-    @return  a TForm
-
-  **)
-  Function FindEditWindow : TForm;
-
-  Const
-    strTEditWindowClassName = 'TEditWindow';
-
-  Var
-    iForm: Integer;
-
-  Begin
-    Result := Nil;
-    For iForm := 0 To Screen.FormCount - 1 Do
-      If CompareText(Screen.Forms[iForm].ClassName, strTEditWindowClassName) = 0 Then
-        Begin
-          Result := Screen.Forms[iForm];
-          Break;
-        End;
-  End;
-
-  (**
-
-    This method returns the component of the given component with the given name and class type.
-
-    @precon  OwnerConponent must be a valid instance.
-    @postcon Returns the component of the owner with the name and class type provided if found else
-             returns nil.
-
-    @param   OwnerComponent as a TComponent as a constant
-    @param   strName        as a String as a constant
-    @param   ClsType        as a TClass as a constant
-    @return  a TComponent
-
-  **)
-  Function FindComponent(Const OwnerComponent : TComponent; Const strName : String;
-    Const ClsType : TClass) : TComponent;
-
-  Var
-    iComponent: Integer;
-
-  Begin
-    Result := Nil;
-    For iComponent := 0 To OwnerComponent.ComponentCount - 1 Do
-      If CompareText(OwnerComponent.Components[iComponent].Name, strName) = 0 Then
-        If OwnerComponent.Components[iComponent] Is ClsType Then
-          Begin
-            Result := OwnerComponent.Components[iComponent];
-            Break;
-          End;
-  End;
-
-ResourceString
-  strDebugWithCodeSiteCaption = 'Debug &with CodeSite';
-
-Const
-  strEditorLocalMenuComponentName = 'EditorLocalMenu';
-  strMenuName = 'miDDTDebugWithCodeSite';
-
-Var
-  F: TForm;
-  CM: TPopupActionBar;
-  iImageIndex: Integer;
-  MenuItem: TMenuItem;
-
-Begin
-  F := FindEditWindow;
-  If Assigned(F) Then
-    Begin
-      CM := FindComponent(F, strEditorLocalMenuComponentName, TPopupActionBar) As TPopupActionBar;
-      If Assigned(CM) Then
-        Begin
-          iImageIndex := AddImageToList(CM.Images);
-          MenuItem := TMenuItem.Create(CM);
-          MenuItem.Name := strMenuName;
-          MenuItem.Caption := strDebugWithCodeSiteCaption;
-          //: @debug MenuItem.OnClick := DebugWithCodeSiteClick;
-          MenuItem.ImageIndex := iImageIndex;
-          CM.Items.Add(MenuItem);
-        End;
-      FMenuTimer.Enabled := False;
-    End;
-End;
-
-(**
-
-  This method does nothing in the context of an IOTAWizard.
-
-  @precon  None.
-  @postcon None.
-
-  @nocheck EmptyMethod
-  
-**)
-Procedure TDDTWizard.AfterSave;
-
-Begin
-  // Do nothing in the context of an IOTAWizard
-End;
-
-(**
-
-  This method does nothing in the context of an IOTAWizard.
-
-  @precon  None.
-  @postcon None.
-
-  @nocheck EmptyMethod
-  
-**)
-Procedure TDDTWizard.BeforeSave;
-
-Begin
-  // Do nothing
 End;
 
 (**
@@ -258,11 +146,84 @@ Begin
   FPluginOptions := TDDTPluginOptions.Create;
   TDDTIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
   FKeyboardBindingIndex := TDDTKeyboardBindings.AddKeyboardBindings(FPluginOptions);
+  FEditorPopupMethod.Data := Nil;
   FMenuInstalled := False;
   FMenuTimer := TTimer.Create(Nil);
   FMenuTimer.Interval := iTimerInterval;
   FMenuTimer.OnTimer := MenuInstallerTimer;
   FMenuTimer.Enabled := True;
+End;
+
+(**
+
+  This is the replacement IDE Editor Context menu OnPopup event handler.
+
+  @precon  None.
+  @postcon It first calls the existing event handler it found (if found) and then installs the menus for
+           the Debugging Tools.
+
+  @param   Sender as a TObject
+
+**)
+Procedure TDDTWizard.DebuggingToolsPopupEvent(Sender: TObject);
+
+ResourceString
+  strDebuggingTools = 'Debugging Tools';
+  strAddBreakpoint = 'Add Breakpoint';
+  strDebugWithCodeSiteCaption = 'Debug &with CodeSite';
+
+Var
+  NotifyEvent : TNotifyEvent;
+  EditorPopupMenu: TPopupActionBar;
+  MI: TMenuItem;
+
+Begin
+  If Assigned(FEditorPopupMethod.Data) Then
+    Begin
+      NotifyEvent := TNotifyEvent(FEditorPopupMethod);
+      NotifyEvent(Sender);
+    End;
+  EditorPopupMenu := FindEditorPopup;
+  If Assigned(EditorPopupMenu) Then
+    Begin
+      If Assigned(FDebuggingToolsMenu) Then
+        FDebuggingToolsMenu.Free;
+      // Create Main Menu Item
+      FDebuggingToolsMenu := TMenuItem.Create(EditorPopupMenu);
+      FDebuggingToolsMenu.Caption := strDebuggingTools;
+      //FDebuggingToolsMenu.OnClick := DebugWithCodeSite;
+      FDebuggingToolsMenu.ImageIndex := FImageIndex;
+      EditorPopupMenu.Items.Add(FDebuggingToolsMenu);
+      // Create Add Breapoint
+      MI := TMenuItem.Create(FDebuggingToolsMenu);
+      MI.Caption := strAddBreakpoint;
+      MI.OnClick := AddBreakpoint;
+      MI.ImageIndex := FImageIndex;
+      FDebuggingToolsMenu.Add(MI);
+      // Create Debug with CodeSite
+      MI := TMenuItem.Create(FDebuggingToolsMenu);
+      MI.Caption := strDebugWithCodeSiteCaption;
+      MI.OnClick := DebugWithCodeSite;
+      MI.ImageIndex := FImageIndex;
+      FDebuggingToolsMenu.Add(MI);
+    End;
+End;
+
+(**
+
+  This is an on click event handler for the Debug with CodeSite IDE context menu item.
+
+  @precon  None.
+  @postcon Adds an evaluation breakpoint at the current cursor position in the active editor containing
+           a CodeSite Send() message.
+
+  @param   Sender as a TObject
+
+**)
+Procedure TDDTWizard.DebugWithCodeSite(Sender : TObject);
+
+Begin
+  TDDTDebuggingTools.AddCodeSiteBreakpoint(FPluginOptions);
 End;
 
 (**
@@ -276,6 +237,7 @@ End;
 Destructor TDDTWizard.Destroy;
 
 Begin
+  UnhookEditorPopupMenu;
   FPluginOptions.SaveSettings;
   TDDTKeyboardBindings.RemoveKeyboardBindings(FKeyboardBindingIndex);
   TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
@@ -294,7 +256,7 @@ End;
   @nocheck EmptyMethod
   
 **)
-Procedure TDDTWizard.Destroyed;
+Procedure TDDTWizard.Execute;
 
 Begin
   // Do nothing
@@ -302,18 +264,92 @@ End;
 
 (**
 
-  This method does nothing in the context of an IOTAWizard.
+  This method returns the component of the given component with the given name and class type.
 
-  @precon  None.
-  @postcon None.
+  @precon  OwnerConponent must be a valid instance.
+  @postcon Returns the component of the owner with the name and class type provided if found else
+           returns nil.
 
-  @nocheck EmptyMethod
-  
+  @param   OwnerComponent as a TComponent as a constant
+  @param   strName        as a String as a constant
+  @param   ClsType        as a TClass as a constant
+  @return  a TComponent
+
 **)
-Procedure TDDTWizard.Execute;
+Function TDDTWizard.FindComponent(Const OwnerComponent : TComponent; Const strName : String;
+  Const ClsType : TClass) : TComponent;
+
+Var
+  iComponent: Integer;
 
 Begin
-  // Do nothing
+  Result := Nil;
+  For iComponent := 0 To OwnerComponent.ComponentCount - 1 Do
+    If CompareText(OwnerComponent.Components[iComponent].Name, strName) = 0 Then
+      If OwnerComponent.Components[iComponent] Is ClsType Then
+        Begin
+          Result := OwnerComponent.Components[iComponent];
+          Break;
+        End;
+End;
+
+(**
+
+  This method attempts to find the editors popup menu and returna  reference to it.
+
+  @precon  None.
+  @postcon Returns a reference to the editors popup menu if found else returns nil.
+
+  @return  a TPopupActionBar
+
+**)
+Function  TDDTWizard.FindEditorPopup : TPopupActionBar;
+
+Const
+  strEditorLocalMenuComponentName = 'EditorLocalMenu';
+  
+Var
+  EditorForm: TForm;
+
+Begin
+  Result := Nil;
+  EditorForm := FindEditWindow;
+  If Assigned(EditorForm) Then
+    Begin
+      Result := FindComponent(
+        EditorForm,
+        strEditorLocalMenuComponentName,
+        TPopupActionBar
+      ) As TPopupActionBar;
+    End;
+End;
+
+(**
+
+  This method searches the screens objects forms for the form with the given class name.
+
+  @precon  None.
+  @postcon The form reference is returned IF found else nil.
+
+  @return  a TForm
+
+**)
+Function TDDTWizard.FindEditWindow : TForm;
+
+Const
+  strTEditWindowClassName = 'TEditWindow';
+
+Var
+  iForm: Integer;
+
+Begin
+  Result := Nil;
+  For iForm := 0 To Screen.FormCount - 1 Do
+    If CompareText(Screen.Forms[iForm].ClassName, strTEditWindowClassName) = 0 Then
+      Begin
+        Result := Screen.Forms[iForm];
+        Break;
+      End;
 End;
 
 (**
@@ -372,6 +408,35 @@ End;
 
 (**
 
+  This is method hooks the Editors popup menu.
+
+  @precon  None.
+  @postcon The code search the IDE for the editor and then its context menu and hooks the popup menus
+           OnPopup event handler so that it can add menus to the context menu when it is displayed.
+
+**)
+Procedure TDDTWizard.HookEditorPopupMenu;
+
+Var
+  EditorPopupMenu : TPopupActionBar;
+
+Begin
+  EditorPopupMenu := FindEditorPopup;
+  If Assigned(EditorPopupMenu) Then
+    Begin
+      FImageIndex := AddImageToList(EditorPopupMenu.Images);
+      If Assigned(EditorPopupMenu.OnPopup) Then
+        Begin
+          FEditorPopupMethod := TMethod(EditorPopupMenu.OnPopup);
+          EditorPopupMenu.OnPopup := DebuggingToolsPopupEvent;
+        End Else
+          EditorPopupMenu.OnPopup := DebuggingToolsPopupEvent;
+      FMenuTimer.Enabled := False;
+    End;
+End;
+
+(**
+
   This is an on timer event handler.
 
   @precon  None.
@@ -383,25 +448,29 @@ End;
 Procedure TDDTWizard.MenuInstallerTimer(Sender: TObject);
 
 Begin
-  //: @debug This doesn't work in new IDEs => AddMenuToEditorContextMenu;
+  HookEditorPopupMenu;
 End;
 
 (**
 
-  This method does nothing in the context of an IOTAWizard.
+  This method attempts to remove the IDE Editor popup menu OnPopup hook when the plug-in is removed.
+  This is only here for BPLs as the editor does not exist at the point in time this wizard is
+  destroyed.
 
   @precon  None.
-  @postcon None.
+  @postcon The IDE Editor onctext menu opopup hook is removed if found.
 
-  @nocheck EmptyMethod
-  
 **)
-Procedure TDDTWizard.Modified;
+Procedure TDDTWizard.UnhookEditorPopupMenu;
+
+Var
+  EditorPopupMenu : TPopupActionBar;
 
 Begin
-  // Do nothing
+  CodeSite.TraceMethod(Self, 'UnhookEditorPopupMenu', tmoTiming);
+  EditorPopupMenu := FindEditorPopup;
+  If Assigned(EditorPopupMenu) And Assigned(EditorPopupMenu.OnPopup) Then
+    EditorPopupMenu.OnPopup := TNotifyEvent(FEditorPopupMethod);
 End;
 
 End.
-
-

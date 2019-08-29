@@ -4,7 +4,7 @@
 
   @Author  David Hoyle
   @Version 1.0
-  @Date    25 Aug 2019
+  @Date    28 Aug 2019
   
 **)
 Unit DebuggingTools.KeyboardBindings;
@@ -43,7 +43,7 @@ Implementation
 Uses
   System.SysUtils,
   VCL.Menus,
-  DebuggingTools.OpenToolsAPIFunctions, DebuggingTools.Types;
+  DebuggingTools.DebuggingTools;
 
 (**
 
@@ -63,56 +63,8 @@ Uses
 Procedure TDDTKeyboardBindings.AddBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut;
   Var BindingResult: TKeyBindingResult);
 
-  (**
-
-    This method attempts to find the source breakpoint corresponding to the given line and filename.
-
-    @precon  DebuggingServices must be a valid instance.
-    @postcon Returns the breakpoint interface reference if found else returns nil.
-
-    @param   DebuggingServices as an IOTADebuggerServices as a constant
-    @param   strFileName       as a String as a constant
-    @param   iLine             as an Integer as a constant
-    @return  an IOTABreakpoint
-
-  **)
-  Function FindExistingBreakpoint(Const DebuggingServices : IOTADebuggerServices;
-    Const strFileName : String; Const iLine : Integer) : IOTABreakpoint;
-
-  Var
-    iBreakpoint: Integer;
-  
-  Begin
-    Result := Nil;
-    For iBreakpoint := 0 To DebuggingServices.SourceBkptCount - 1 Do
-      If (DebuggingServices.SourceBkpts[iBreakpoint].LineNumber = iLine) Then
-        If AnsiCompareFileName(DebuggingServices.SourceBkpts[iBreakpoint].FileName, strFileName) = 0 Then
-          Begin
-            Result := DebuggingServices.SourceBkpts[iBreakpoint];
-            Break;
-          End;
-  End;
-
-Var
-  MS : IOTAModuleServices;
-  Source: IOTASourceEditor;
-  CursorPos: TOTAEditPos;
-  DS : IOTADebuggerServices;
-  Breakpoint : IOTABreakpoint;
-  
 Begin
-  If Supports(BorlandIDEServices, IOTAModuleServices, MS) Then
-    Begin
-      Source := TDDTOpenToolsAPIFunctions.SourceEditor(MS.CurrentModule);
-      CursorPos := Source.EditViews[0].CursorPos;
-      If Supports(BorlandIDEServices, IOTADebuggerServices, DS) Then
-        Begin
-          Breakpoint := FindExistingBreakpoint(DS, Source.FileName, CursorPos.Line);
-          If Not Assigned(Breakpoint) Then
-            Breakpoint := DS.NewSourceBreakpoint(Source.FileName, CursorPos.Line, Nil);
-          Breakpoint.Edit(True)
-        End;
-    End;
+  TDDTDebuggingTools.AddBreakpoint;
   BindingResult := krHandled;
 End;
 
@@ -136,49 +88,8 @@ End;
 Procedure TDDTKeyboardBindings.AddCodeSiteBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut;
   Var BindingResult: TKeyBindingResult);
 
-ResourceString
-  strThereNoIdentifierAtCursorPosition = 'There is no identifier at the cursor position!';
-
-Var
-  ES : IOTAEditorServices;
-  DS : IOTADebuggerServices;
-  CP: TOTAEditPos;
-  BP: IOTABreakpoint;
-  strIdentifierAtCursor: String;
-  strMsg : String;
-  iPos: Integer;
-
 Begin
-  If Supports(BorlandIDEServices, IOTAEditorServices, ES) Then
-    If Supports(BorlandIDEServices, IOTADebuggerServices, DS) Then
-      Begin
-        CP := ES.TopView.CursorPos;
-        strIdentifierAtCursor := TDDTOpenToolsAPIFunctions.IdentifierAtCursor;
-        If strIdentifierAtCursor <> '' Then
-          Begin
-            BP := DS.NewSourceBreakpoint(ES.TopBuffer.FileName, CP.Line, Nil);
-            strMsg := FPluginOptions.CodeSiteTemplate;
-            iPos := Pos('%s', strMsg);
-            While iPos > 0 Do
-              Begin
-                strMsg := Copy(strMsg, 1, Pred(iPos)) + strIdentifierAtCursor +
-                  Copy(strMsg, iPos + 2, Length(strMsg) - iPos - 1);
-                iPos := Pos('%s', strMsg);
-              End;
-            BP.EvalExpression := strMsg;
-            BP.LogResult := DDTcLogResult In FPluginOptions.CheckOptions;
-            BP.DoBreak := DDTcBreak In FPluginOptions.CheckOptions;
-            If DDTcCodeSiteLogging In FPluginOptions.CheckOptions Then
-              TDDTOpenToolsAPIFunctions.CheckCodeSiteLogging;
-            If DDTcDebuggingDCUs In FPluginOptions.CheckOptions Then
-              TDDTOpenToolsAPIFunctions.CheckDebuggingDCUs;
-            If DDTcLibraryPath In FPluginOptions.CheckOptions Then
-              TDDTOpenToolsAPIFunctions.CheckLibraryPath;
-            If DDTcEditBreakpoint In FPluginOptions.CheckOptions Then
-              BP.Edit(True);
-          End Else
-            TDDTOpenToolsAPIFunctions.OutputMsg(strThereNoIdentifierAtCursorPosition);
-      End;
+  TDDTDebuggingTools.AddCodeSiteBreakpoint(FPluginOptions);
   BindingResult := krHandled;
 End;
 

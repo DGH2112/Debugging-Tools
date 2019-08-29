@@ -126,6 +126,7 @@
         <DCCReference Include="Source\DebuggingTools.PluginOptions.pas"/>
         <DCCReference Include="Source\DebuggingTools.KeyboardBindings.pas"/>
         <DCCReference Include="Source\DebuggingTools.OpenToolsAPIFunctions.pas"/>
+        <DCCReference Include="Source\DebuggingTools.DebuggingTools.pas"/>
         <RcCompile Include="DWCSITHVerInfo.RC">
             <Form>DWCSITHVerInfo.res</Form>
         </RcCompile>
@@ -182,7 +183,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\DGHDebuggingTools.dll" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="DGHDebuggingTools.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>DGHDebuggingTools.dll</RemoteName>
                         <Overwrite>true</Overwrite>

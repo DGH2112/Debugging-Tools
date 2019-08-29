@@ -5,7 +5,7 @@
 
   @Author  David Hoyle
   @Version 1.3
-  @date    25 Aug 2019
+  @date    28 Aug 2019
 
   @nocheck EmptyBeginEnd
 
@@ -40,7 +40,8 @@ uses
   DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas',
   DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas',
   DebuggingTools.KeyboardBindings in 'Source\DebuggingTools.KeyboardBindings.pas',
-  DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas';
+  DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas',
+  DebuggingTools.DebuggingTools in 'Source\DebuggingTools.DebuggingTools.pas';
 
 {$R *.res}
 
