@@ -6,6 +6,25 @@
   @Version 1.3
   @Date    29 Aug 2019
 
+  @license
+  
+    DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
+    in the RAD Studio IDE when debugging.
+    
+    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+
 **)
 Unit DebuggingTools.Wizard;
 
@@ -35,6 +54,8 @@ Type
     FImageIndex           : Integer;
     FEditorPopupMethod    : TMethod;
     FDebuggingToolsMenu   : TMenuItem;
+    FOptionsFrame         : INTAAddInOptions;
+    FParentFrame          : INTAAddInOptions;
   Strict Protected
     // IOTAWizard
     Procedure Execute;
@@ -144,7 +165,8 @@ Begin
   AddSplashScreen;
   AddAboutBoxEntry;
   FPluginOptions := TDDTPluginOptions.Create;
-  TDDTIDEOptionsHandler.AddOptionsFrameHandler(FPluginOptions);
+  FOptionsFrame := TDDTIDEOptionsHandler.AddOptionsFrameHandler(ftOptions, FPluginOptions);
+  FParentFrame := TDDTIDEOptionsHandler.AddOptionsFrameHandler(ftParent, FPluginOptions);
   FKeyboardBindingIndex := TDDTKeyboardBindings.AddKeyboardBindings(FPluginOptions);
   FEditorPopupMethod.Data := Nil;
   FMenuInstalled := False;
@@ -240,7 +262,8 @@ Begin
   UnhookEditorPopupMenu;
   FPluginOptions.SaveSettings;
   TDDTKeyboardBindings.RemoveKeyboardBindings(FKeyboardBindingIndex);
-  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
+  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler(FOptionsFrame);
+  TDDTIDEOptionsHandler.RemoveOptionsFrameHandler(FParentFrame);
   RemoveAboutBoxEntry;
   FMenuTimer.Free;
   Inherited Destroy;

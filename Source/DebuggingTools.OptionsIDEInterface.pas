@@ -5,7 +5,26 @@
 
   @Author  David Hoyle
   @Version 1.3
-  @Date    11 Aug 2019
+  @Date    29 Aug 2019
+
+  @license
+  
+    DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
+    in the RAD Studio IDE when debugging.
+    
+    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
 
 **)
 Unit DebuggingTools.OptionsIDEInterface;
@@ -14,25 +33,22 @@ Interface
 
 {$INCLUDE CompilerDefinitions.inc}
 
-{$IFDEF DXE00}
-
 Uses
   ToolsAPI,
-  DebuggingTools.OptionsFrame,
-  Forms,
+  VCL.Forms,
   DebuggingTools.Interfaces;
 
 Type
+  (** An enumerate to define the frame type to be created. **)
+  TDDTFrameType = (ftParent, ftOptions);
+
   (** A class which implements the INTAAddingOptions interface to added options frames
       to the IDEs options dialogue. **)
   TDDTIDEOptionsHandler = Class(TInterfacedObject, IUnknown, INTAAddInOptions)
   Strict Private
-    Class Var
-      (** A class variable to hold the instance reference for this IDE options handler. **)
-      FDDTIDEOptions : TDDTIDEOptionsHandler;
-  Strict Private
-    FDDTOptionsFrame  : TframeDDTOptions;
+    FDDTFrame         : TCustomFrame;
     FDDTPluginOptions : IDDTPluginOptions;
+    FFrameType        : TDDTFrameType;
   Strict Protected
     Procedure DialogClosed(Accepted: Boolean);
     Procedure FrameCreated(AFrame: TCustomFrame);
@@ -43,23 +59,22 @@ Type
     Function  IncludeInIDEInsight: Boolean;
     Function  ValidateContents: Boolean;
   Public
-    Constructor Create(Const PluginOptions : IDDTPluginOptions);
-    Class Procedure AddOptionsFrameHandler(Const PluginOptions : IDDTPluginOptions);
-    Class Procedure RemoveOptionsFrameHandler;
+    Constructor Create(Const PluginOptions : IDDTPluginOptions; Const eFrameType : TDDTFrameType);
+    Class Function  AddOptionsFrameHandler(Const eFrameType : TDDTFrameType;
+      Const PluginOptions : IDDTPluginOptions) : INTAAddInOptions;
+    Class Procedure RemoveOptionsFrameHandler(Const AddInOptions : INTAAddInOptions);
   End;
-{$ENDIF}
 
 Implementation
-
-{$IFDEF DXE00}
 
 Uses
   {$IFDEF DEBUG}
   CodeSiteLogging,
   {$ENDIF}
   {$IFDEF DXE20}System.SysUtils{$ELSE}SysUtils{$ENDIF},
-  DebuggingTools.Types;
-
+  DebuggingTools.Types,
+  DebuggingTools.OptionsFrame,
+  DebuggingTools.ParentFrame;
 (**
 
   This is a class method to add the options frame handler to the IDEs options dialogue.
@@ -67,18 +82,21 @@ Uses
   @precon  None.
   @postcon The IDE options handler is installed into the IDE.
 
+  @param   eFrameType    as a TDDTFrameType as a constant
   @param   PluginOptions as an IDDTPluginOptions as a constant
+  @return  an INTAAddInOptions
 
 **)
-Class Procedure TDDTIDEOptionsHandler.AddOptionsFrameHandler(Const PluginOptions : IDDTPluginOptions);
+Class Function TDDTIDEOptionsHandler.AddOptionsFrameHandler(Const eFrameType : TDDTFrameType;
+  Const PluginOptions : IDDTPluginOptions) : INTAAddInOptions;
 
 Var
   EnvironmentOptionsServices : INTAEnvironmentOptionsServices;
 
 Begin
-  FDDTIDEOptions := TDDTIDEOptionsHandler.Create(PluginOptions);
+  Result := TDDTIDEOptionsHandler.Create(PluginOptions, eFrameType);
   If Supports(BorlandIDEServices, INTAEnvironmentOptionsServices, EnvironmentOptionsServices) Then
-    EnvironmentOptionsServices.RegisterAddInOptions(FDDTIDEOptions);
+    EnvironmentOptionsServices.RegisterAddInOptions(Result);
 End;
 
 (**
@@ -89,13 +107,16 @@ End;
   @postcon Stores the Options Read Wrtier interface reference.
 
   @param   PluginOptions as an IDDTPluginOptions as a constant
+  @param   eFrameType    as a TDDTFrameType as a constant
 
 **)
-Constructor TDDTIDEOptionsHandler.Create(Const PluginOptions : IDDTPluginOptions);
+Constructor TDDTIDEOptionsHandler.Create(Const PluginOptions : IDDTPluginOptions;
+  Const eFrameType : TDDTFrameType);
 
 Begin
   Inherited Create;
   FDDTPluginOptions := PluginOptions;
+  FFrameType := eFrameType;
 End;
 
 (**
@@ -120,7 +141,7 @@ Var
 
 Begin
   If Accepted Then
-    If Supports(FDDTOptionsFrame, IDDTOptions, I) Then
+    If Supports(FDDTFrame, IDDTOptions, I) Then
       Begin
         I.SaveOptions(Ops, strCodeSiteMsg);
         FDDTPluginOptions.CodeSiteTemplate := strCodeSiteMsg;
@@ -149,8 +170,8 @@ Var
   strCodeSiteMsg : String;
 
 Begin
-  FDDTOptionsFrame := AFrame As TframeDDTOptions;
-  If Supports(FDDTOptionsFrame, IDDTOptions, I) Then
+  FDDTFrame := AFrame;
+  If Supports(FDDTFrame, IDDTOptions, I) Then
     Begin
       Options := FDDTPluginOptions.CheckOptions;
       strCodeSiteMsg := FDDTPluginOptions.CodeSiteTemplate;
@@ -189,10 +210,14 @@ End;
 Function TDDTIDEOptionsHandler.GetCaption: String;
 
 ResourceString
-  strDebugWithCodeSite = 'DGH Debugging Tools.Debug With CodeSite';
+  strDebugWithCodeSite = 'DGH Debugging Tools';
+  strOptions = 'DGH Debugging Tools.Options';
 
 Begin
-  Result := strDebugWithCodeSite;
+  Case FFrameType Of
+    ftParent:  Result := strDebugWithCodeSite;
+    ftOptions: Result := strOptions;
+  End;
 End;
 
 (**
@@ -209,7 +234,12 @@ End;
 Function TDDTIDEOptionsHandler.GetFrameClass: TCustomFrameClass;
 
 Begin
-  Result := TframeDDTOptions;
+  Case FFrameType Of
+    ftParent:  Result := TfmDDTParentFrame;
+    ftOptions: Result := TframeDDTOptions;
+  Else
+    Result := TfmDDTParentFrame;
+  End;
 End;
 
 (**
@@ -252,15 +282,17 @@ End;
   @precon  None.
   @postcon The IDE options handler is removed from the IDE.
 
+  @param   AddInOptions as an INTAAddInOptions as a constant
+
 **)
-Class Procedure TDDTIDEOptionsHandler.RemoveOptionsFrameHandler;
+Class Procedure TDDTIDEOptionsHandler.RemoveOptionsFrameHandler(Const AddInOptions : INTAAddInOptions);
 
 Var
   EnvironmentOptionsServices : INTAEnvironmentOptionsServices;
 
 Begin
   If Supports(BorlandIDEServices, INTAEnvironmentOptionsServices, EnvironmentOptionsServices) Then
-    EnvironmentOptionsServices.UnregisterAddInOptions(FDDTIDEOptions);
+    EnvironmentOptionsServices.UnregisterAddInOptions(AddInOptions);
 End;
 
 (**
@@ -278,8 +310,6 @@ Function TDDTIDEOptionsHandler.ValidateContents: Boolean;
 Begin
   Result := True;
 End;
-
-{$ENDIF}
 
 End.
 

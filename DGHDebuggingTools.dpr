@@ -5,7 +5,26 @@
 
   @Author  David Hoyle
   @Version 1.3
-  @date    28 Aug 2019
+  @Date    29 Aug 2019
+
+  @license
+  
+    DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
+    in the RAD Studio IDE when debugging.
+    
+    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
 
   @nocheck EmptyBeginEnd
 
@@ -30,18 +49,20 @@ Library DGHDebuggingTools;
 uses
   DebuggingTools.InterfaceInitialisation in 'Source\DebuggingTools.InterfaceInitialisation.pas',
   DebuggingTools.Wizard in 'Source\DebuggingTools.Wizard.pas',
-  DebuggingTools.Functions in 'Source\DebuggingTools.Functions.pas',
   DebuggingTools.AboutBox in 'Source\DebuggingTools.AboutBox.pas',
   DebuggingTools.Common in 'Source\DebuggingTools.Common.pas',
   DebuggingTools.SplashScreen in 'Source\DebuggingTools.SplashScreen.pas',
   DebuggingTools.OptionsIDEInterface in 'Source\DebuggingTools.OptionsIDEInterface.pas',
   DebuggingTools.OptionsFrame in 'Source\DebuggingTools.OptionsFrame.pas' {frameDDTOptions: TFrame},
   DebuggingTools.Types in 'Source\DebuggingTools.Types.pas',
-  DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas',
+  DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas' {;
+
+{$R *.res},
   DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas',
   DebuggingTools.KeyboardBindings in 'Source\DebuggingTools.KeyboardBindings.pas',
   DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas',
-  DebuggingTools.DebuggingTools in 'Source\DebuggingTools.DebuggingTools.pas';
+  DebuggingTools.DebuggingTools in 'Source\DebuggingTools.DebuggingTools.pas',
+  DebuggingTools.ParentFrame in 'Source\DebuggingTools.ParentFrame.pas' {fmDDTParentFrame: TFrame};
 
 {$R *.res}
 

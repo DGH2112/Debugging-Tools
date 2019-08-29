@@ -50,8 +50,6 @@ object frameDDTOptions: TframeDDTOptions
     TabOrder = 0
     ViewStyle = vsReport
     OnChange = lvOptionsChange
-    ExplicitTop = 68
-    ExplicitHeight = 256
   end
   object edtCodeSiteMsg: TEdit
     AlignWithMargins = True
