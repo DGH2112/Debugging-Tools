@@ -108,7 +108,6 @@
         </RcCompile>
         <DCCReference Include="Source\DebuggingTools.InterfaceInitialisation.pas"/>
         <DCCReference Include="Source\DebuggingTools.Wizard.pas"/>
-        <DCCReference Include="Source\DebuggingTools.Functions.pas"/>
         <DCCReference Include="Source\DebuggingTools.AboutBox.pas"/>
         <DCCReference Include="Source\DebuggingTools.Common.pas"/>
         <DCCReference Include="Source\DebuggingTools.SplashScreen.pas"/>
@@ -127,9 +126,6 @@
         <DCCReference Include="Source\DebuggingTools.KeyboardBindings.pas"/>
         <DCCReference Include="Source\DebuggingTools.OpenToolsAPIFunctions.pas"/>
         <DCCReference Include="Source\DebuggingTools.DebuggingTools.pas"/>
-        <RcCompile Include="DWCSITHVerInfo.RC">
-            <Form>DWCSITHVerInfo.res</Form>
-        </RcCompile>
         <None Include="Source\CompilerDefinitions.inc"/>
         <None Include="License.md"/>
         <None Include="README.md"/>
