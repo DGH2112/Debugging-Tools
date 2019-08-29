@@ -467,7 +467,7 @@ Var
   EditorPopupMenu : TPopupActionBar;
 
 Begin
-  CodeSite.TraceMethod(Self, 'UnhookEditorPopupMenu', tmoTiming);
+  {$IFDEF DEBUG} CodeSite.TraceMethod(Self, 'UnhookEditorPopupMenu', tmoTiming); {$ENDIF DEBUG}
   EditorPopupMenu := FindEditorPopup;
   If Assigned(EditorPopupMenu) And Assigned(EditorPopupMenu.OnPopup) Then
     EditorPopupMenu.OnPopup := TNotifyEvent(FEditorPopupMethod);

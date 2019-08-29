@@ -5,7 +5,7 @@
 
   @Author  David Hoyle
   @Version 1.0
-  @Date    28 Aug 2019
+  @Date    29 Aug 2019
   
 **)
 Unit DebuggingTools.OpenToolsAPIFunctions;
@@ -224,7 +224,7 @@ Begin
       For M In BDSMacros.Matches(slSearchLibrary.Text) Do
         Begin
           If slMacros.IndexOfName(M.Groups.Item[1].Value) = -1 Then
-            slMacros.AddPair(M.Groups.Item[1].Value, StringReplace(
+            slMacros.Add(M.Groups.Item[1].Value + '=' + StringReplace(
               GetEnvironmentVariable(M.Groups.Item[1].Value), '\', '\\', [rfReplaceAll]));
         End;
       For iMacro := 0 To slMacros.Count - 1 Do
@@ -236,8 +236,8 @@ Begin
     Finally
       slMacros.Free;
     End;
-    If FileSearch(strCodeSiteLoggingDcu, StringReplace(slSearchLibrary.Text, #13#10, ';',
-      [rfReplaceAll])).Length = 0 Then
+    If Length(FileSearch(strCodeSiteLoggingDcu, StringReplace(slSearchLibrary.Text, #13#10, ';',
+      [rfReplaceAll]))) = 0 Then
       OutputMsg(strCodeSiteLoggingNotFound);
   Finally
     slSearchLibrary.Free;
