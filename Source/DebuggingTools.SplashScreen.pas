@@ -68,8 +68,7 @@ Var
   iBuild : Integer;
   bmSplashScreen : HBITMAP;
 
-Begin //FI:W519
-  {$IFDEF D2005}
+Begin
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
   bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   (SplashScreenServices As IOTASplashScreenServices).AddPluginBitmap(
@@ -79,7 +78,6 @@ Begin //FI:W519
     {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]), ''
     );
-  {$ENDIF}
 End;
 
 End.

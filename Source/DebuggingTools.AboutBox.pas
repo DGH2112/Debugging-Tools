@@ -45,12 +45,10 @@ Uses
   DebuggingTools.Common,
   Forms;
 
-{$IFDEF D2005}
 Var
   (** This is an internal reference for the about box entry`s plugin index - requried for
       removal. **)
   iAboutPlugin : Integer;
-{$ENDIF}
 
 (**
 
@@ -75,8 +73,7 @@ Var
   iBuild : Integer;
   bmSplashScreen : HBITMAP;
 
-Begin //FI:W519
-  {$IFDEF D2005}
+Begin
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
   bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
@@ -87,7 +84,6 @@ Begin //FI:W519
     {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
     Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild]));
-  {$ENDIF}
 End;
 
 (**
@@ -100,11 +96,9 @@ End;
 **)
 Procedure RemoveAboutBoxEntry;
 
-Begin //FI:W519
-  {$IFDEF D2010}
+Begin
   If iAboutPlugin > iWizardFailState Then
     (BorlandIDEServices As IOTAAboutBoxServices).RemovePluginInfo(iAboutPlugin);
-  {$ENDIF}
 End;
 
 End.

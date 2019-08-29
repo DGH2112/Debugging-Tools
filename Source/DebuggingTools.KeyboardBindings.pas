@@ -79,7 +79,7 @@ Uses
   @param   BindingResult as a TKeyBindingResult as a reference
 
 **)
-Procedure TDDTKeyboardBindings.AddBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut;
+Procedure TDDTKeyboardBindings.AddBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut; //FI:O804
   Var BindingResult: TKeyBindingResult);
 
 Begin
@@ -104,7 +104,7 @@ End;
   @param   BindingResult as a TKeyBindingResult as a reference
 
 **)
-Procedure TDDTKeyboardBindings.AddCodeSiteBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut;
+Procedure TDDTKeyboardBindings.AddCodeSiteBreakpoint(Const Context: IOTAKeyContext; KeyCode: TShortcut; //FI:O804
   Var BindingResult: TKeyBindingResult);
 
 Begin
@@ -169,6 +169,7 @@ End;
 Constructor TDDTKeyboardBindings.Create(Const PluginOptions: IDDTPluginOptions);
 
 Begin
+  Inherited Create;
   FPluginOptions := PluginOptions;
 End;
 
