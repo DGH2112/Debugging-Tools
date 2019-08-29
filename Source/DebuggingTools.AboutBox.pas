@@ -4,11 +4,30 @@
   IDE.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    16 Sep 2017
+  @Version 1.3
+  @Date    29 Aug 2019
+
+  @license
+  
+    DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
+    in the RAD Studio IDE when debugging.
+    
+    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
 
 **)
-Unit DebugWithCodeSite.AboutBox;
+Unit DebuggingTools.AboutBox;
 
 Interface
 
@@ -23,15 +42,13 @@ Uses
   ToolsAPI,
   SysUtils,
   Windows,
-  DebugWithCodeSite.Common,
+  DebuggingTools.Common,
   Forms;
 
-{$IFDEF D2005}
 Var
   (** This is an internal reference for the about box entry`s plugin index - requried for
       removal. **)
   iAboutPlugin : Integer;
-{$ENDIF}
 
 (**
 
@@ -43,6 +60,12 @@ Var
 **)
 Procedure AddAboutBoxEntry;
 
+ResourceString
+  strSKUBuild = 'SKU Build %d.%d.%d.%d';
+
+Const
+  strDDTSplashScreenBitMap = 'DDTSplashScreenBitMap48x48';
+
 Var
   iMajor : Integer;
   iMinor : Integer;
@@ -50,19 +73,17 @@ Var
   iBuild : Integer;
   bmSplashScreen : HBITMAP;
 
-Begin //FI:W519
-  {$IFDEF D2005}
+Begin
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
-  bmSplashScreen := LoadBitmap(hInstance, 'DWCSSplashScreenBitMap48x48');
+  bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
     Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
       Application.Title]),
-    'An IDE plug-in to added CodeSite debugging via Breakpoints.',
+    strIDEPlugInDescription,
     bmSplashScreen,
-    False,
+    {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
-    Format('SKU Build %d.%d.%d.%d', [iMajor, iMinor, iBugfix, iBuild]));
-  {$ENDIF}
+    Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild]));
 End;
 
 (**
@@ -75,11 +96,9 @@ End;
 **)
 Procedure RemoveAboutBoxEntry;
 
-Begin //FI:W519
-  {$IFDEF D2010}
+Begin
   If iAboutPlugin > iWizardFailState Then
     (BorlandIDEServices As IOTAAboutBoxServices).RemovePluginInfo(iAboutPlugin);
-  {$ENDIF}
 End;
 
 End.

@@ -4,11 +4,30 @@
   plug-ins build information for the splash screen and about box.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    16 Sep 2017
+  @Version 1.3
+  @Date    29 Aug 2019
+
+  @license
+  
+    DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
+    in the RAD Studio IDE when debugging.
+    
+    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
 
 **)
-Unit DebugWithCodeSite.Common;
+Unit DebuggingTools.Common;
 
 Interface
 
@@ -23,9 +42,16 @@ Resourcestring
       entries. **)
   strRevision = ' abcdefghijklmnopqrstuvwxyz';
   (** This resource string is used in the splash screen and about box entries. **)
-  strSplashScreenName = 'Debug with CodeSite %d.%d%s for %s';
+  strSplashScreenName = 'DGH Debugging Tools %d.%d%s for %s';
+  (** A resource string to provide a description of the plug-in. **)
+  strIDEPlugInDescription = 'A RAD Studio IDE plug-in to added additional debugging tools to the IDE.';
+  {$IFDEF DEBUG}
   (** This resource string is used in the splash screen and about box entries. **)
-  strSplashScreenBuild = 'Freeware by David Hoyle (Build %d.%d.%d.%d)';
+  strSplashScreenBuild = 'David Hoyle (c) 2019 License GNU GPL 3 (DEBUG Build %d.%d.%d.%d)';
+  {$ELSE}
+  (** This resource string is used in the splash screen and about box entries. **)
+  strSplashScreenBuild = 'David Hoyle (c) 2019 License GNU GPL 3 (Build %d.%d.%d.%d)';
+  {$ENDIF DEBUG}
 
 Const
   (** A constant to define the failed state for a notifier not installed. **)
@@ -53,6 +79,10 @@ Uses
 **)
 Procedure BuildNumber(var iMajor, iMinor, iBugFix, iBuild : Integer);
 
+Const
+  iRightShift = 16;
+  iWordMask = $FFFF;
+
 Var
   VerInfoSize: DWORD;
   VerInfo: Pointer;
@@ -71,13 +101,10 @@ Begin
       Try
         GetFileVersionInfo(strBuffer, 0, VerInfoSize, VerInfo);
         VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
-        With VerValue^ Do
-          Begin
-            iMajor := dwFileVersionMS shr 16;
-            iMinor := dwFileVersionMS and $FFFF;
-            iBugFix := dwFileVersionLS shr 16;
-            iBuild := dwFileVersionLS and $FFFF;
-          End;
+        iMajor := VerValue^.dwFileVersionMS shr iRightShift;
+        iMinor := VerValue^.dwFileVersionMS and iWordMask;
+        iBugFix := VerValue^.dwFileVersionLS shr iRightShift;
+        iBuild := VerValue^.dwFileVersionLS and iWordMask;
       Finally
         FreeMem(VerInfo, VerInfoSize);
       End;
