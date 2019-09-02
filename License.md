@@ -4,7 +4,7 @@ Author:   David Hoyle
 
 Version:  1.3
 
-Date:     17 Sep 2017
+Date:     02 Sep 2019
 
 Web Page: http://www.davidghoyle.co.uk/WordPress/?page_id=1777
 
