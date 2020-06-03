@@ -3,15 +3,15 @@
   This modulel contains a frame for the root node of the BADI Options frame in the IDE.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    29 Aug 2019
+  @Version 1.171
+  @Date    03 Jun 2020
 
   @license
 
     DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
     in the RAD Studio IDE when debugging.
     
-    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+    Copyright (C) 2020  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
