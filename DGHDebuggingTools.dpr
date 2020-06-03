@@ -4,7 +4,7 @@
   debugging messages via a breakpoint.
 
   @Author  David Hoyle
-  @Version 1.303
+  @Version 1.304
   @Date    03 Jun 2020
 
   @license
@@ -45,8 +45,6 @@ Library DGHDebuggingTools;
 {$R 'DDTITHVerInfo.res' 'DDTITHVerInfo.RC'}
 {$INCLUDE Source\CompilerDefinitions.inc}
 {$INCLUDE Source\LibrarySuffixes.inc}
-
-{$R *.res}
 
 uses
   DebuggingTools.InterfaceInitialisation in 'Source\DebuggingTools.InterfaceInitialisation.pas',
