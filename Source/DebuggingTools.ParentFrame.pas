@@ -3,15 +3,15 @@
   This modulel contains a frame for the root node of the BADI Options frame in the IDE.
 
   @Author  David Hoyle
-  @Version 1.0
-  @Date    29 Aug 2019
+  @Version 1.171
+  @Date    03 Jun 2020
 
   @license
 
     DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
     in the RAD Studio IDE when debugging.
     
-    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+    Copyright (C) 2020  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -62,7 +62,8 @@ Implementation
 
 {$R *.dfm}
 
-uses DebuggingTools.Common;
+Uses
+  DebuggingTools.Common;
 
 (**
 
@@ -78,8 +79,8 @@ uses DebuggingTools.Common;
 **)
 Constructor TfmDDTParentFrame.Create(AOwner: TComponent);
 
-Const
-  strBugFix = ' abcdefghijklmnopqrstuvwxyz';
+ResourceString
+  strAuthor = 'Author: David Hoyle (c)  2020 GNU GPL 3';
   strBrowseAndDocIt = 'DGH Debugging Tools %d.%d%s';
   {$IFDEF DEBUG}
   strDEBUGBuild = 'DEBUG Build %d.%d.%d.%d';
@@ -88,6 +89,26 @@ Const
   {$ENDIF}
   strBuildDateFmt = 'ddd dd/mmm/yyyy hh:nn';
   strBuildDate = 'Build Date: %s';
+  strInformation =
+    'DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality in the RAD ' +
+    'Studio IDE when debugging.'#13#10 +
+    ''#13#10 +
+    'Copyright (C) 2020 David Hoyle '#13#10 +
+    '(https://github.com/DGH2112/Debugging-Tools/)'#13#10 +
+    ''#13#10 +
+    'This program is free software: you can redistribute it and/or modify it under the terms of the ' +
+    'GNU General Public License as published by the Free Software Foundation, either version 3 of ' +
+    'the License, or (at your option) any later version.'#13#10 +
+    ''#13#10 +
+    'This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; ' +
+    'without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See ' +
+    'the GNU General Public License for more details.'#13#10 +
+    ''#13#10 +
+    'You should have received a copy of the GNU General Public License along with this program.  If ' +
+    'not, see <https://www.gnu.org/licenses/>.';
+
+Const
+  strBugFix = ' abcdefghijklmnopqrstuvwxyz';
 
 Var
   iMajor, iMinor, iBugFix, iBuild : Integer;
@@ -99,7 +120,12 @@ Begin
   Inherited Create(AOwner);
   {$IFDEF CODESITE}CodeSite.TraceMethod(Self, 'LoadSettings', tmoTiming);{$ENDIF}
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
-  lblBADI.Caption := Format(strBrowseAndDocIt, [iMajor, iMinor, strBugFix[Succ(iBugFix)]]);
+  lblAuthor.Caption := strAuthor;
+  lblBADI.Caption := Format(strBrowseAndDocIt, [
+    iMajor,
+    iMinor,
+    strBugFix[Succ(iBugFix)]
+  ]);
   {$IFDEF DEBUG}
   lblBuild.Caption := Format(strDEBUGBuild, [iMajor, iMinor, iBugFix, iBuild]);
   lblBuild.Font.Color := clRed;
@@ -111,6 +137,7 @@ Begin
   SetLength(strModuleName, iSize);
   FileAge(strModuleName, dtDate);
   lblBuildDate.Caption := Format(strBuildDate, [FormatDateTime(strBuildDateFmt, dtDate)]);
+  lblInformation.Lines.Text := strInformation;
   {$IFDEF EUREKALOG}
   lblEurekaLog.Caption := Format(strEurekaLogStatus, [
     BoolToStr(IsEurekaLogInstalled, True),

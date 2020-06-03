@@ -4,15 +4,15 @@
   debugging messages via a breakpoint.
 
   @Author  David Hoyle
-  @Version 1.3
-  @Date    29 Aug 2019
+  @Version 1.392
+  @Date    03 Jun 2020
 
   @license
   
     DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
     in the RAD Studio IDE when debugging.
     
-    Copyright (C) 2019  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+    Copyright (C) 2020  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -55,9 +55,7 @@ uses
   DebuggingTools.OptionsIDEInterface in 'Source\DebuggingTools.OptionsIDEInterface.pas',
   DebuggingTools.OptionsFrame in 'Source\DebuggingTools.OptionsFrame.pas' {frameDDTOptions: TFrame},
   DebuggingTools.Types in 'Source\DebuggingTools.Types.pas',
-  DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas' {;
-
-{$R *.res},
+  DebuggingTools.Interfaces in 'Source\DebuggingTools.Interfaces.pas',
   DebuggingTools.PluginOptions in 'Source\DebuggingTools.PluginOptions.pas',
   DebuggingTools.KeyboardBindings in 'Source\DebuggingTools.KeyboardBindings.pas',
   DebuggingTools.OpenToolsAPIFunctions in 'Source\DebuggingTools.OpenToolsAPIFunctions.pas',
