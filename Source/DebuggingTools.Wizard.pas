@@ -3,8 +3,8 @@
   This module contains the main IDE wizard which manages the life time of all objects.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.305
+  @Date    02 Jan 2022
 
   @license
   
@@ -44,7 +44,7 @@ Uses
   DebuggingTools.Interfaces;
 
 Type
-  (** A class which implements the OIOTAWizard interface to provide the plug-ins main IDE wizard. **)
+  (** A class which implements the IOTAWizard interface to provide the plug-ins main IDE wizard. **)
   TDDTWizard = Class(TNotifierObject, IOTANotifier, IOTAWizard)
   Strict Private
     FMenuTimer            : TTimer;
@@ -102,7 +102,7 @@ Uses
   This is an on click event handler for the Add Breakpoint IDE context menu.
 
   @precon  None.
-  @postcon Adds a breakpoint at the curssor position in the active source code editor.
+  @postcon Adds a breakpoint at the cursor position in the active source code editor.
 
   @param   Sender as a TObject
 
@@ -149,10 +149,10 @@ End;
 
 (**
 
-  A constructor for the TDWVSWizard class.
+  A constructor for the TDDTWizard class.
 
   @precon  None.
-  @postcon Adds a splash screena dn about box and start the timer for installing the context menu.
+  @postcon Adds a splash screen and about box and start the timer for installing the context menu.
 
 **)
 Constructor TDDTWizard.Create;
@@ -178,7 +178,7 @@ End;
 
 (**
 
-  This is the replacement IDE Editor Context menu OnPopup event handler.
+  This is the replacement IDE Editor Context menu On Pop-up event handler.
 
   @precon  None.
   @postcon It first calls the existing event handler it found (if found) and then installs the menus for
@@ -253,7 +253,7 @@ End;
   A destructor for the TDDTWizard class.
 
   @precon  None.
-  @postcon Removes the about box and frees the contet menu timer.
+  @postcon Removes the about box and frees the context menu timer.
 
 **)
 Destructor TDDTWizard.Destroy;
@@ -289,7 +289,7 @@ End;
 
   This method returns the component of the given component with the given name and class type.
 
-  @precon  OwnerConponent must be a valid instance.
+  @precon  OwnerComponent must be a valid instance.
   @postcon Returns the component of the owner with the name and class type provided if found else
            returns nil.
 
@@ -318,10 +318,10 @@ End;
 
 (**
 
-  This method attempts to find the editors popup menu and returna  reference to it.
+  This method attempts to find the editors pop-up menu and returns a reference to it.
 
   @precon  None.
-  @postcon Returns a reference to the editors popup menu if found else returns nil.
+  @postcon Returns a reference to the editors pop-up menu if found else returns nil.
 
   @return  a TPopupActionBar
 
@@ -415,7 +415,7 @@ End;
 
 (**
 
-  This is a getter method for the WizardState property.
+  This is a getter method for the Wizard State property.
 
   @precon  None.
   @postcon Returns the state that the wizard is enabled.
@@ -431,11 +431,11 @@ End;
 
 (**
 
-  This is method hooks the Editors popup menu.
+  This is method hooks the Editors pop-up menu.
 
   @precon  None.
-  @postcon The code search the IDE for the editor and then its context menu and hooks the popup menus
-           OnPopup event handler so that it can add menus to the context menu when it is displayed.
+  @postcon The code search the IDE for the editor and then its context menu and hooks the pop-up menus
+           On Pop-up event handler so that it can add menus to the context menu when it is displayed.
 
 **)
 Procedure TDDTWizard.HookEditorPopupMenu;
@@ -463,7 +463,7 @@ End;
   This is an on timer event handler.
 
   @precon  None.
-  @postcon Tries to install the editoer context menu.
+  @postcon Tries to install the editor context menu.
 
   @param   Sender as a TObject
 
@@ -476,12 +476,12 @@ End;
 
 (**
 
-  This method attempts to remove the IDE Editor popup menu OnPopup hook when the plug-in is removed.
-  This is only here for BPLs as the editor does not exist at the point in time this wizard is
+  This method attempts to remove the IDE Editor pop-up menu On Pop-up hook when the plug-in is removed.
+  This is only here for BPL as the editor does not exist at the point in time this wizard is
   destroyed.
 
   @precon  None.
-  @postcon The IDE Editor onctext menu opopup hook is removed if found.
+  @postcon The IDE Editor on text menu pop-up hook is removed if found.
 
 **)
 Procedure TDDTWizard.UnhookEditorPopupMenu;
@@ -490,7 +490,7 @@ Var
   EditorPopupMenu : TPopupActionBar;
 
 Begin
-  {$IFDEF DEBUG} CodeSite.TraceMethod(Self, 'UnhookEditorPopupMenu', tmoTiming); {$ENDIF DEBUG}
+  {$IFDEF CODESITE} CodeSite.TraceMethod(Self, 'UnhookEditorPopupMenu', tmoTiming); {$ENDIF CODESITE}
   EditorPopupMenu := FindEditorPopup;
   If Assigned(EditorPopupMenu) And Assigned(EditorPopupMenu.OnPopup) Then
     EditorPopupMenu.OnPopup := TNotifyEvent(FEditorPopupMethod);

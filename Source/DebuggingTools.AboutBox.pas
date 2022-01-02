@@ -4,8 +4,8 @@
   IDE.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -46,16 +46,16 @@ Uses
   Forms;
 
 Var
-  (** This is an internal reference for the about box entry`s plugin index - requried for
+  (** This is an internal reference for the about box entry`s plug-in index - required for
       removal. **)
   iAboutPlugin : Integer;
 
 (**
 
-  This method adds an Aboutbox entry to the RAD Studio IDE.
+  This method adds an About box entry to the RAD Studio IDE.
 
   @precon  None.
-  @postcon The about box entry is added to the IDE and its plugin index stored in iAboutPlugin.
+  @postcon The about box entry is added to the IDE and its plug-in index stored in iAboutPlugin.
 
 **)
 Procedure AddAboutBoxEntry;
@@ -88,10 +88,10 @@ End;
 
 (**
 
-  This method removes the indexed abotu box entry from the RAD Studio IDE.
+  This method removes the indexed about box entry from the RAD Studio IDE.
 
   @precon  None.
-  @postcon The about box entry is remvoed from the IDE.
+  @postcon The about box entry is removed from the IDE.
 
 **)
 Procedure RemoveAboutBoxEntry;

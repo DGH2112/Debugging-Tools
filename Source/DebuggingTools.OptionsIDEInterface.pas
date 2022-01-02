@@ -42,7 +42,7 @@ Type
   (** An enumerate to define the frame type to be created. **)
   TDDTFrameType = (ftParent, ftOptions);
 
-  (** A class which implements the INTAAddingOptions interface to added options frames
+  (** A class which implements the INTAAddinOptions interface to added options frames
       to the IDEs options dialogue. **)
   TDDTIDEOptionsHandler = Class(TInterfacedObject, IUnknown, INTAAddInOptions)
   Strict Private
@@ -101,10 +101,10 @@ End;
 
 (**
 
-  A constructor for the TDWVSIDEOptionsHandler class.
+  A constructor for the TDDTIDEOptionsHandler class.
 
   @precon  None.
-  @postcon Stores the Options Read Wrtier interface reference.
+  @postcon Stores the Options Read Writer interface reference.
 
   @param   PluginOptions as an IDDTPluginOptions as a constant
   @param   eFrameType    as a TDDTFrameType as a constant
@@ -222,7 +222,7 @@ End;
 
 (**
 
-  This is a getter method for the FrameClass property.
+  This is a getter method for the Frame Class property.
 
   @precon  None.
   @postcon This is called by the IDE to get the frame class to create when displaying the
@@ -244,7 +244,7 @@ End;
 
 (**
 
-  This is a getter method for the HelpContext property.
+  This is a getter method for the Help Context property.
 
   @precon  None.
   @postcon This is called by the IDe and returns 0 to signify no help.

@@ -1,10 +1,10 @@
 (**
 
-  This modulel contains a frame for the root node of the BADI Options frame in the IDE.
+  This module contains a frame for the root node of the BADI Options frame in the IDE.
 
   @Author  David Hoyle
-  @Version 1.171
-  @Date    03 Jun 2020
+  @Version 1.172
+  @Date    02 Jan 2022
 
   @license
 
@@ -67,7 +67,7 @@ Uses
 
 (**
 
-  This method intialises the frame with build information.
+  This method initialises the frame with build information.
 
   @precon  None.
   @postcon The frame is initialised.
@@ -87,7 +87,6 @@ ResourceString
   {$ELSE}
   strBuild = 'Build %d.%d.%d.%d';
   {$ENDIF}
-  strBuildDateFmt = 'ddd dd/mmm/yyyy hh:nn';
   strBuildDate = 'Build Date: %s';
   strInformation =
     'DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality in the RAD ' +
@@ -109,6 +108,7 @@ ResourceString
 
 Const
   strBugFix = ' abcdefghijklmnopqrstuvwxyz';
+  strBuildDateFmt = 'ddd dd/mmm/yyyy hh:nn';
 
 Var
   iMajor, iMinor, iBugFix, iBuild : Integer;

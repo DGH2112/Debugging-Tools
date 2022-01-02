@@ -4,8 +4,8 @@
   plug-ins build information for the splash screen and about box.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -38,9 +38,6 @@ Uses
 
 {$IFNDEF _FIXINSIGHT_}
 Resourcestring
-  (** This resource string is used for the bug fix number in the splash screen and about box
-      entries. **)
-  strRevision = ' abcdefghijklmnopqrstuvwxyz';
   (** This resource string is used in the splash screen and about box entries. **)
   strSplashScreenName = 'DGH Debugging Tools %d.%d%s for %s';
   (** A resource string to provide a description of the plug-in. **)
@@ -54,6 +51,9 @@ Resourcestring
   {$ENDIF DEBUG}
 
 Const
+  (** This resource string is used for the bug fix number in the splash screen and about box
+      entries. **)
+  strRevision = ' abcdefghijklmnopqrstuvwxyz';
   (** A constant to define the failed state for a notifier not installed. **)
   iWizardFailState = -1; //FI:O803
 {$ENDIF}
@@ -66,10 +66,10 @@ Uses
 
 (**
 
-  This procedure returns the build information for the OTA Plugin.
+  This procedure returns the build information for the OTA Plug-in.
 
   @precon  None.
-  @postcon the build information for the OTA plugin is returned.
+  @postcon the build information for the OTA plug-in is returned.
 
   @param   iMajor  as an Integer as a reference
   @param   iMinor  as an Integer as a reference

@@ -1,11 +1,11 @@
 (**
 
   This module contains a procedure to add a splash screen entry to the RAD Studio splash screen on
-  startup.
+  start-up.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -49,7 +49,7 @@ Uses
   This method installs an entry in the RAD Studio IDE splash screen.
 
   @precon  None.
-  @postcon An entry is added to the splash screen for this plugin.
+  @postcon An entry is added to the splash screen for this plug-in.
 
 **)
 Procedure AddSplashScreen;
