@@ -4,8 +4,8 @@
   options dialogue.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.305
+  @Date    02 Jan 2022
 
   @license
 
@@ -71,7 +71,7 @@ Uses
   {$IFDEF DEBUG}
   CodeSiteLogging,
   {$ENDIF}
-  {$IFDEF DXE20}System.SysUtils{$ELSE}SysUtils{$ENDIF},
+  System.SysUtils,
   DebuggingTools.Types,
   DebuggingTools.OptionsFrame,
   DebuggingTools.ParentFrame;
