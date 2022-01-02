@@ -3,8 +3,8 @@
   This module contains a class to handle the plug-ins settings.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -92,7 +92,7 @@ End;
 
 (**
 
-  This is a getter method for the CheckOptions property.
+  This is a getter method for the Check Options property.
 
   @precon  None.
   @postcon Returns the check options.
@@ -108,7 +108,7 @@ End;
 
 (**
 
-  This is a getter method for the CoedSiteTemplate property.
+  This is a getter method for the Code Site Template property.
 
   @precon  None.
   @postcon Returns the CodeSite template.
@@ -124,7 +124,7 @@ End;
 
 (**
 
-  This method loads the plug-ins settings from the regsitry.
+  This method loads the plug-ins settings from the registry.
 
   @precon  None.
   @postcon  The plug-ins settings are loaded.
@@ -171,7 +171,7 @@ End;
 
 (**
 
-  This is a setter method for the CheckOptions property.
+  This is a setter method for the Check Options property.
 
   @precon  None.
   @postcon Updates the check options.
@@ -187,7 +187,7 @@ End;
 
 (**
 
-  This is a setter method for the CodeSiteTemplate property.
+  This is a setter method for the Code Site Template property.
 
   @precon  None.
   @postcon Updates the CodeSite template.

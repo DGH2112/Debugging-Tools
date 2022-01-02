@@ -3,8 +3,8 @@
   This module contains a frame for editing the plug-ins options in the IDE options dialogue.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -46,7 +46,7 @@ Uses
   StdCtrls;
 
 Type
-  (** A frame to decsribe tand edit the plug-ins optins in the IDE. **)
+  (** A frame to describe and edit the plug-ins options in the IDE. **)
   TframeDDTOptions = Class(TFrame, IDDTOptions)
     lvOptions: TListView;
     lblCodeSiteMsg: TLabel;
@@ -82,7 +82,7 @@ Const
 
 (**
 
-  A constructor for the frameDDTOptions class.
+  A constructor for the TframeDDTOptions class.
 
   @precon  None.
   @postcon Populates the list view with options.
@@ -132,7 +132,7 @@ End;
 
 (**
 
-  This is an on change event handler for the ListView control.
+  This is an on change event handler for the List View control.
 
   @precon  None.
   @postcon Updates the internal check list with state changes.

@@ -3,8 +3,8 @@
   This module contains a class which implements editor keyboard bindings in the IDE.
 
   @Author  David Hoyle
-  @Version 1.001
-  @Date    03 Jun 2020
+  @Version 1.016
+  @Date    02 Jan 2022
   
   @license
   
@@ -89,12 +89,11 @@ End;
 
 (**
 
-  This is the on click event handler for the editor Debug With CodeSite contetx menu.
+  This is the on click event handler for the editor Debug With CodeSite context menu.
 
   @precon  None.
-  @postcon Adds a breakpoint on the line of the cursor with CodeSite information in the EvalExpression 
-           property for the identifier at the cursor. nocheck MissingCONSTInParam nohint Context 
-           KeyCode
+  @postcon Adds a breakpoint on the line of the cursor with CodeSite information in the Evaluation
+           Expression property for the identifier at the cursor.
 
   @nocheck MissingCONSTInParam
   @nohint  Context Keycode
@@ -136,7 +135,7 @@ End;
 
 (**
 
-  This method regsiters the keyboard bindings with the IDE - it ios called by the IDE when the keyboard
+  This method registers the keyboard bindings with the IDE - it is called by the IDE when the keyboard
   binding class is loaded.
 
   @precon  None.
@@ -161,7 +160,7 @@ End;
   A constructor for the TDDTKeyboardBindings class.
 
   @precon  None.
-  @postcon Stores an interface reference to the plugin options.
+  @postcon Stores an interface reference to the plug-in options.
 
   @param   PluginOptions as an IDDTPluginOptions as a constant
 
@@ -175,7 +174,7 @@ End;
 
 (**
 
-  This is a getter method for the BindingType property.
+  This is a getter method for the Binding Type property.
 
   @precon  None.
   @postcon Returns that this is a partial binding (i.e. adds to the main binding).
@@ -191,7 +190,7 @@ End;
 
 (**
 
-  This is a getter method for the DisplayName property.
+  This is a getter method for the Display Name property.
 
   @precon  None.
   @postcon Returns the display name of the binding which appears in the list of available bindings.
@@ -221,7 +220,7 @@ End;
 Function TDDTKeyboardBindings.GetName: String;
 
 ResourceString
-  strName = 'Season''s Fall.DGH Debugging Tools';
+  strName = 'David Hoyle.DGH Debugging Tools';
 
 Begin
   Result := strName;
@@ -229,7 +228,7 @@ End;
 
 (**
 
-  This class method remove the indexed keybindings from the IDE.
+  This class method remove the indexed key bindings from the IDE.
 
   @precon  None.
   @postcon The keyboard bindings are no longer registered with the IDE.

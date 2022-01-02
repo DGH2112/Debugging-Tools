@@ -4,8 +4,8 @@
   work with the Open Tools API.
 
   @Author  David Hoyle
-  @Version 1.001
-  @Date    03 Jun 2020
+  @Version 1.002
+  @Date    02 Jan 2022
   
   @license
   
@@ -165,7 +165,7 @@ End;
 
 (**
 
-  This method changes the active projects options to see if the Debugging DCUs is enabled. Outputs
+  This method changes the active projects options to see if the Debugging DCUs are enabled. Outputs
   a message if they are not.
 
   @precon  None.
@@ -203,10 +203,10 @@ End;
 
 (**
 
-  This method checks that the CodeSiteLogging.dcu is on the project or IDEs search paths.
+  This method checks that the CodeSiteLogging.DCU is on the project or IDEs search paths.
 
   @precon  None.
-  @postcon Outputs a message if the CodeSiteLogging.dcu file is not found on the search paths.
+  @postcon Outputs a message if the CodeSiteLogging.DCU file is not found on the search paths.
 
 **)
 Class Procedure TDDTOpenToolsAPIFunctions.CheckLibraryPath;
@@ -524,7 +524,7 @@ End;
 
   This method returns the source code editor for the passed module.
 
-  @precon  Module is the module for which a source ditor interface is required.
+  @precon  Module is the module for which a source editor interface is required.
   @postcon Returns the source editor interface for the given module.
 
   @param   Module as an IOTAModule as a Constant
