@@ -4,7 +4,7 @@
   start-up.
 
   @Author  David Hoyle
-  @Version 1.302
+  @Version 1.375
   @Date    02 Jan 2022
 
   @license
@@ -40,7 +40,11 @@ Implementation
 Uses
   ToolsAPI,
   SysUtils,
+  {$IFDEF RS110}
+  Graphics,
+  {$ELSE}
   Windows,
+  {$ENDIF RS110}
   Forms,
   DebuggingTools.Common;
 
@@ -66,10 +70,29 @@ Var
   iMinor : Integer;
   iBugFix : Integer;
   iBuild : Integer;
+  {$IFDEF RS110}
+  SplashScreenBitMap : TBitMap;
+  {$ELSE}
   bmSplashScreen : HBITMAP;
+  {$ENDIF RS110}
 
 Begin
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
+  {$IFDEF RS110}
+  SplashScreenBitMap := TBitmap.Create;
+  Try
+    SplashScreenBitMap.LoadFromResourceName(hInstance, strDDTSplashScreenBitMap);
+    (SplashScreenServices As IOTASplashScreenServices).AddPluginBitmap(
+      Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
+        Application.Title]),
+      [SplashScreenBitMap],
+      {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
+      Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]), ''
+    );
+  Finally
+    SplashScreenBitMap.Free;
+  End;
+  {$ELSE}
   bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   (SplashScreenServices As IOTASplashScreenServices).AddPluginBitmap(
     Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
@@ -77,7 +100,8 @@ Begin
     bmSplashScreen,
     {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]), ''
-    );
+  );
+  {$ENDIF RS110}
 End;
 
 End.
