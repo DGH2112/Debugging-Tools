@@ -4,7 +4,7 @@
   IDE.
 
   @Author  David Hoyle
-  @Version 1.302
+  @Version 1.386
   @Date    02 Jan 2022
 
   @license
@@ -41,7 +41,11 @@ Implementation
 Uses
   ToolsAPI,
   SysUtils,
+  {$IFDEF RS110}
+  Graphics,
+  {$ELSE}
   Windows,
+  {$ENDIF RS110}
   DebuggingTools.Common,
   Forms;
 
@@ -71,10 +75,31 @@ Var
   iMinor : Integer;
   iBugFix : Integer;
   iBuild : Integer;
+  {$IFDEF RS110}
+  AboutBoxBitMap : TBitmap;
+  {$ELSE}
   bmSplashScreen : HBITMAP;
+  {$ENDIF RS110}
 
 Begin
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
+  {$IFDEF RS110}
+  AboutBoxBitMap := TBitmap.Create;
+  Try
+    AboutBoxBitMap.LoadFromResourceName(hInstance, strDDTSplashScreenBitMap);
+    iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
+      Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
+        Application.Title]),
+      strIDEPlugInDescription,
+      [AboutBoxBitMap],
+      {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
+      Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
+      Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild])
+    );
+  Finally
+    AboutBoxBitMap.Free;
+  End;
+  {$ELSE}
   bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
     Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
@@ -83,7 +108,9 @@ Begin
     bmSplashScreen,
     {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
-    Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild]));
+    Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild])
+  );
+  {$ENDIF RS110}
 End;
 
 (**
