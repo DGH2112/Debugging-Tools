@@ -4,8 +4,8 @@
   IDE.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.386
+  @Date    02 Jan 2022
 
   @license
   
@@ -41,21 +41,25 @@ Implementation
 Uses
   ToolsAPI,
   SysUtils,
+  {$IFDEF RS110}
+  Graphics,
+  {$ELSE}
   Windows,
+  {$ENDIF RS110}
   DebuggingTools.Common,
   Forms;
 
 Var
-  (** This is an internal reference for the about box entry`s plugin index - requried for
+  (** This is an internal reference for the about box entry`s plug-in index - required for
       removal. **)
   iAboutPlugin : Integer;
 
 (**
 
-  This method adds an Aboutbox entry to the RAD Studio IDE.
+  This method adds an About box entry to the RAD Studio IDE.
 
   @precon  None.
-  @postcon The about box entry is added to the IDE and its plugin index stored in iAboutPlugin.
+  @postcon The about box entry is added to the IDE and its plug-in index stored in iAboutPlugin.
 
 **)
 Procedure AddAboutBoxEntry;
@@ -71,10 +75,31 @@ Var
   iMinor : Integer;
   iBugFix : Integer;
   iBuild : Integer;
+  {$IFDEF RS110}
+  AboutBoxBitMap : TBitmap;
+  {$ELSE}
   bmSplashScreen : HBITMAP;
+  {$ENDIF RS110}
 
 Begin
   BuildNumber(iMajor, iMinor, iBugFix, iBuild);
+  {$IFDEF RS110}
+  AboutBoxBitMap := TBitmap.Create;
+  Try
+    AboutBoxBitMap.LoadFromResourceName(hInstance, strDDTSplashScreenBitMap);
+    iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
+      Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
+        Application.Title]),
+      strIDEPlugInDescription,
+      [AboutBoxBitMap],
+      {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
+      Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
+      Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild])
+    );
+  Finally
+    AboutBoxBitMap.Free;
+  End;
+  {$ELSE}
   bmSplashScreen := LoadBitmap(hInstance, strDDTSplashScreenBitMap);
   iAboutPlugin := (BorlandIDEServices As IOTAAboutBoxServices).AddPluginInfo(
     Format(strSplashScreenName, [iMajor, iMinor, Copy(strRevision, iBugFix + 1, 1),
@@ -83,15 +108,17 @@ Begin
     bmSplashScreen,
     {$IFDEF DEBUG} True {$ELSE}  False {$ENDIF},
     Format(strSplashScreenBuild, [iMajor, iMinor, iBugfix, iBuild]),
-    Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild]));
+    Format(strSKUBuild, [iMajor, iMinor, iBugfix, iBuild])
+  );
+  {$ENDIF RS110}
 End;
 
 (**
 
-  This method removes the indexed abotu box entry from the RAD Studio IDE.
+  This method removes the indexed about box entry from the RAD Studio IDE.
 
   @precon  None.
-  @postcon The about box entry is remvoed from the IDE.
+  @postcon The about box entry is removed from the IDE.
 
 **)
 Procedure RemoveAboutBoxEntry;

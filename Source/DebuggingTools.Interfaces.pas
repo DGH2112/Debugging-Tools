@@ -3,8 +3,8 @@
   This module contains interfaces for use within the application.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -41,7 +41,7 @@ Type
     Procedure SaveOptions(Var CheckOptions : TDDTChecks; Var strCodeSiteMsg : String);
   End;
 
-  (** An interface for the Plugin Options **)
+  (** An interface for the Plug-in Options **)
   IDDTPluginOptions = Interface
   ['{C0C072B8-4F4C-4EE1-938A-333FF7BCE881}']
     Function  GetCodeSiteTemplate : String;

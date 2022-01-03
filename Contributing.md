@@ -49,4 +49,4 @@ This plug-in hooks the IDEs code editor context menu through interception and ad
 
 regards
 
-David Hoyle Jun 2020.
+David Hoyle Jan 2022.

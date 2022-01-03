@@ -1,10 +1,10 @@
 (**
 
-  This module contaisn the code to load the wizard in to the RAD Studio IDE.
+  This module contains the code to load the wizard in to the RAD Studio IDE.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    02 Jan 2022
 
   @license
   
@@ -48,10 +48,10 @@ Uses
 
 (**
 
-  This method is requested by the RAD Studio IDE in order to load the plugin as a DLL wizard.
+  This method is requested by the RAD Studio IDE in order to load the plug-in as a DLL wizard.
 
   @precon  None.
-  @postcon Creates the plugin.
+  @postcon Creates the plug-in.
 
   @nocheck MissingCONSTInParam
   @nohint  Terminate
@@ -73,10 +73,10 @@ End;
 
 (**
 
-  This method is required by the RAD Studio IDE in order to load the plugin as a package.
+  This method is required by the RAD Studio IDE in order to load the plug-in as a package.
 
   @precon  None.
-  @postcon Creates the plugin wizard.
+  @postcon Creates the plug-in wizard.
 
 **)
 Procedure Register;

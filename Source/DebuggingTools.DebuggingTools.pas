@@ -3,8 +3,8 @@
   This module contains a class with class methods that perform the various debugging operations.
 
   @Author  David Hoyle
-  @Version 1.001
-  @Date    03 Jun 2020
+  @Version 1.002
+  @Date    02 Jan 2022
   
   @license
   
@@ -34,7 +34,7 @@ Uses
   DebuggingTools.Interfaces;
 
 Type
-  (** A clas encapsulating the debugging tools operations. **)
+  (** A class encapsulating the debugging tools operations. **)
   TDDTDebuggingTools = Class
   Strict Private
   Strict Protected
@@ -55,7 +55,7 @@ Uses
 (**
 
   This method adds a breakpoint to the current source file at the line of the cursor and displays the
-  breakpoitn editor (if is already exists it is displayed).
+  breakpoint editor (if is already exists it is displayed).
 
   @precon  None.
   @postcon The Breakpoint editor is displayed.
@@ -118,7 +118,7 @@ End;
 (**
 
   This method adds an evaluation expression to a breakpoint using CodeSite to output messages rather than
-  inserrt them into the code.
+  insert them into the code.
 
   @precon  PluginOptions must be a valid instance.
   @postcon The breakpoint is created containing the identifier at the cursor and optionally displayed.
