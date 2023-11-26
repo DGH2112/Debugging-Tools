@@ -3,15 +3,15 @@
   This module contains a class which implements editor keyboard bindings in the IDE.
 
   @Author  David Hoyle
-  @Version 1.016
-  @Date    02 Jan 2022
+  @Version 1.017
+  @Date    26 Nov 2023
   
   @license
   
     DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
     in the RAD Studio IDE when debugging.
     
-    Copyright (C) 2020  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+    Copyright (C) 2023  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

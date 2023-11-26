@@ -25,11 +25,10 @@ object frameDDTOptions: TframeDDTOptions
     AlignWithMargins = True
     Left = 3
     Top = 52
-    Width = 484
+    Width = 166
     Height = 16
     Align = alTop
     Caption = 'Debug with CodeSite Options'
-    ExplicitWidth = 166
   end
   object lvOptions: TListView
     AlignWithMargins = True
