@@ -6,9 +6,9 @@ EnabledVersionInfo=1
 IncludeInProject=1
 CompileWithBRCC32=0
 MajorVer=1
-MinorVer=4
+MinorVer=5
 ReleaseVer=0
-BuildVer=252
+BuildVer=254
 ResourceName=DDTITHVerInfo
 WarnBefore=0
 WarnAfter=0
@@ -35,13 +35,13 @@ ExclusionFiles=
 [VersionInfo]
 CompanyName=Season's Fall Music
 FileDescription=DGH Debugging Tools - numerous help functions for debugging in RAD Studio
-FileVersion=1.4.0.252
+FileVersion=1.5.0.254
 InternalName=DGHDebuggingTools
 LegalCopyright=Season's Fall Music
 LegalTrademarks=Season's Fall Music
 OriginalFilename=DGHDebuggingTools
 ProductName=DGHDebuggingTools
-ProductVersion=1.4
+ProductVersion=1.5
 Comments=DGH Debugging Tools - numerous help functions for debugging in RAD Studio
 
 [Additional Zip Files]

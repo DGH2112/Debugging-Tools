@@ -2,11 +2,11 @@
 
 Author:   David Hoyle (davidghoyle@gmail.com / [https://github.com/DGH2112](https://github.com/DGH2112))
 
-Version:  1.4
+Version:  1.5
 
-Date:     03 Jan 2022
+Date:     26 Nov 2023
 
-Web Page: [http://www.davidghoyle.co.uk/WordPress/?page_id=1777](http://www.davidghoyle.co.uk/WordPress/?page_id=1777)
+Web Page: [https://github.com/DGH2112/Debugging-Tools](https://github.com/DGH2112/Debugging-Tools)
 
 ## GNU GENERAL PUBLIC LICENSE
 
@@ -319,3 +319,4 @@ The hypothetical commands `show w` and `show c` should show the appropriate part
   You should also get your employer (if you work as a programmer) or school, if any, to sign a "copyright disclaimer" for the program, if necessary. For more information on this, and how to apply and follow the GNU GPL, see <https://www.gnu.org/licenses/>.
 
   The GNU General Public License does not permit incorporating your program into proprietary programs.  If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library.  If this is what you want to do, use the GNU Lesser General Public License instead of this License.  But first, please read <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
