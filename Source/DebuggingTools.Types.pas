@@ -3,15 +3,15 @@
   This method contains simple types to be used throughout the application.
 
   @Author  David Hoyle
-  @Version 1.301
-  @Date    03 Jun 2020
+  @Version 1.302
+  @Date    26 Nov 2023
 
   @license
   
     DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
     in the RAD Studio IDE when debugging.
     
-    Copyright (C) 2020  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+    Copyright (C) 2023  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

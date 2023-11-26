@@ -1,8 +1,8 @@
 LANGUAGE LANG_ENGLISH,SUBLANG_ENGLISH_US
 
 1 VERSIONINFO LOADONCALL MOVEABLE DISCARDABLE IMPURE
-FILEVERSION 1, 4, 0, 249
-PRODUCTVERSION 1, 4, 0, 249
+FILEVERSION 1, 5, 0, 254
+PRODUCTVERSION 1, 5, 0, 254
 FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 FILEOS VOS__WINDOWS32
 FILETYPE VFT_APP
@@ -13,13 +13,13 @@ FILETYPE VFT_APP
     {
       VALUE "CompanyName", "Season's Fall Music\000"
       VALUE "FileDescription", "DGH Debugging Tools - numerous help functions for debugging in RAD Studio\000"
-      VALUE "FileVersion", "1.4.0.249\000"
+      VALUE "FileVersion", "1.5.0.254\000"
       VALUE "InternalName", "DGHDebuggingTools\000"
       VALUE "LegalCopyright", "Season's Fall Music\000"
       VALUE "LegalTrademarks", "Season's Fall Music\000"
       VALUE "OriginalFilename", "DGHDebuggingTools\000"
       VALUE "ProductName", "DGHDebuggingTools\000"
-      VALUE "ProductVersion", "1.4\000"
+      VALUE "ProductVersion", "1.5\000"
       VALUE "Comments", "DGH Debugging Tools - numerous help functions for debugging in RAD Studio\000"
     }
   }

@@ -4,8 +4,8 @@
   definition exists it means that that version of the compiler or high is
   available.
 
-  @Version 1.511
-  @Date    02 Jan 2022
+  @Version 1.579
+  @Date    26 Nov 2023
   @Author  David Hoyle
 
   @license
@@ -13,7 +13,7 @@
     DGH Debugging Tools is a RAD Studio plug-in to provide additional functionality
     in the RAD Studio IDE when debugging.
 
-    Copyright (C) 2020  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
+    Copyright (C) 2023  David Hoyle (https://github.com/DGH2112/Debugging-Tools/)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -549,6 +549,38 @@
   {$DEFINE RS103}
   {$DEFINE RS104}
   {$DEFINE RS110}
+{$ENDIF}
+
+// Embarcadero Delphi 12.0 Athens (Studio 23.0), Version 29, Package version 290
+{$IFDEF VER360}
+  {$DEFINE D0001}
+  {$DEFINE D0002}
+  {$DEFINE D0003}
+  {$DEFINE D0004}
+  {$DEFINE D0005}
+  {$DEFINE D0006}
+  {$DEFINE D0007}
+  {$DEFINE D0008}
+  {$DEFINE D2005}
+  {$DEFINE D2006}
+  {$DEFINE D2007}
+  {$DEFINE D2009}
+  {$DEFINE D2010}
+  {$DEFINE DXE00}
+  {$DEFINE DXE20}
+  {$DEFINE DXE30}
+  {$DEFINE DXE40}
+  {$DEFINE DXE50}
+  {$DEFINE DXE60}
+  {$DEFINE DXE70}
+  {$DEFINE DXE80}
+  {$DEFINE RS100}
+  {$DEFINE RS101}
+  {$DEFINE RS102}
+  {$DEFINE RS103}
+  {$DEFINE RS104}
+  {$DEFINE RS110}
+  {$DEFINE RS120}
 {$ENDIF}
 
 {$IFNDEF D0001}
